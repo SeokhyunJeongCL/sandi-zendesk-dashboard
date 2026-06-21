@@ -133,7 +133,7 @@ h3.blk{font-size:12.5px;font-weight:700;margin-bottom:12px}
 .exec-k .n{font-size:23px;font-weight:700;letter-spacing:-.5px}.exec-k .l{font-size:10px;color:#9AA7B0;margin-top:2px}
 .ovgrid{display:grid;grid-template-columns:1.55fr 1fr;gap:14px;align-items:start;margin-bottom:16px}@media(max-width:900px){.ovgrid{grid-template-columns:1fr}}
 .stack-wrap{overflow-x:auto}
-.health{display:flex;flex-direction:column;gap:10px}
+.health{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}@media(max-width:900px){.health{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.health{grid-template-columns:1fr}}
 .hcard{border:1px solid var(--border);border-radius:11px;padding:13px 15px}
 .hcard .ht{font-size:11px;font-weight:700;display:flex;align-items:center;gap:6px}
 .hcard .hn{font-size:19px;font-weight:700;margin:5px 0 2px;letter-spacing:-.3px}
@@ -284,10 +284,9 @@ h3.blk{font-size:12.5px;font-weight:700;margin-bottom:12px}
 
   <div class="sec-h">인입 추이 (얼마나 사용하고 있나) <span style="margin-left:auto;font-size:10.5px;color:var(--muted);font-weight:600">주간 총 인입 · 면적=사용량</span></div>
   <div class="sec-sub">Zendesk 도입(2026-02-말) 이후 <b>인입이 꾸준히 증가</b> = 채널 안착 신호. 주별 총건수를 한눈에. <span style="color:var(--muted)">주제별 구성은 진단 탭, 주제별 시간변화는 추적 탭에서.</span></div>
-  <div class="ovgrid">
-    <div class="card" style="padding:16px 18px"><div class="stack-wrap"><div id="trend"></div></div></div>
-    <div class="health" id="health"></div>
-  </div>
+  <div class="card" style="padding:16px 18px;margin-bottom:18px"><div class="stack-wrap"><div id="trend"></div></div></div>
+  <div class="sec-h">Zendesk 운영 건강성 <span style="margin-left:auto;font-size:10.5px;color:var(--muted);font-weight:600">채널 안착 · 분류 · 신선도 · 해결 신호</span></div>
+  <div class="health" id="health"></div>
   <div class="sec-h">주제별 누적 & 최근 증감 <span style="margin-left:auto;font-size:10.5px;color:var(--muted);font-weight:600">전체 기간 · 최근4주 vs 직전4주</span></div>
   <div class="sec-sub">전체 기간 누적 비중과, 최근 방향(▲늘어남 ▼줄어듦)을 함께. 줄어드는 주제 = 우리 조치가 먹히는 곳.</div>
   <div class="card" style="padding:14px 18px" id="catsummary"></div>
@@ -299,6 +298,7 @@ h3.blk{font-size:12.5px;font-weight:700;margin-bottom:12px}
   <div class="sec-h" style="margin-top:16px">문제 구조 한눈에 <span style="margin-left:auto;font-size:10.5px;color:var(--muted);font-weight:600">면적=건수 · 칸 클릭 → 아래 상세로 · ▲=4주 급증</span></div>
   <div class="sec-sub">가장 큰 면적이 가장 큰 운영 부하. 빨강(로그인/인증)·주황(계정/설정)이 화면을 지배 = 온보딩 문제.</div>
   <div class="card" style="padding:16px 18px;margin-bottom:18px"><div class="tmap" id="treemap"></div><div class="tmap-leg" id="tmapLeg"></div></div>
+  <div id="aimemo"></div>
   <div class="kpis" id="kpis"></div>
 
   <!-- 분석 인사이트 (배포본 흡수: 자동화 가능 · 주제별 감성 · 고빈도 키워드) -->
@@ -473,19 +473,19 @@ function renderExec(){
  </div></div>`;
 }
 function renderTrend(){
- const W=580,H=250,PL=30,PB=30,PT=20,PR=14,weeks=D.weeks;
+ const W=1000,H=300,PL=44,PB=36,PT=24,PR=24,weeks=D.weeks;
  const vals=weeks.map(w=>D.wktot[w]||0);
  const mxy=Math.max(...vals,1),step=Math.max(1,Math.ceil(mxy/4));
  const X=i=>PL+i*((W-PL-PR)/(weeks.length-1));
  const Y=v=>H-PB-(v/mxy)*(H-PB-PT);
- let grid='';for(let g=0;g<=mxy;g+=step){grid+=`<line x1="${PL}" y1="${Y(g)}" x2="${W-PR}" y2="${Y(g)}" stroke="#EEF2F6"/><text x="${PL-6}" y="${Y(g)+3}" text-anchor="end" font-size="9" fill="#94A3B8">${g}</text>`;}
- let xl='';weeks.forEach((w,i)=>{if(i%2===0||i===weeks.length-1)xl+=`<text x="${X(i)}" y="${H-PB+15}" text-anchor="middle" font-size="8.5" fill="#94A3B8">${w}</text>`;});
+ let grid='';for(let g=0;g<=mxy;g+=step){grid+=`<line x1="${PL}" y1="${Y(g)}" x2="${W-PR}" y2="${Y(g)}" stroke="#EEF2F6" stroke-width="1.2"/><text x="${PL-9}" y="${Y(g)+5}" text-anchor="end" font-size="13" fill="#94A3B8">${g}</text>`;}
+ let xl='';weeks.forEach((w,i)=>{if(i%2===0||i===weeks.length-1)xl+=`<text x="${X(i)}" y="${H-PB+23}" text-anchor="middle" font-size="13" fill="#94A3B8">${w}</text>`;});
  const pts=weeks.map((w,i)=>`${X(i)},${Y(vals[i])}`).join(' ');
  const area=`${PL},${H-PB} ${pts} ${X(weeks.length-1)},${H-PB}`;
- let dots='';weeks.forEach((w,i)=>{dots+=`<circle cx="${X(i)}" cy="${Y(vals[i])}" r="3.2" fill="#2563EB" stroke="#fff" stroke-width="1.5"><title>${w} 주 ${vals[i]}건</title></circle><text x="${X(i)}" y="${Y(vals[i])-8}" text-anchor="middle" font-size="9.5" font-weight="700" fill="#1E40AF">${vals[i]}</text>`;});
+ let dots='';weeks.forEach((w,i)=>{dots+=`<circle cx="${X(i)}" cy="${Y(vals[i])}" r="5" fill="#2563EB" stroke="#fff" stroke-width="2.2"><title>${w} 주 ${vals[i]}건</title></circle><text x="${X(i)}" y="${Y(vals[i])-13}" text-anchor="middle" font-size="14" font-weight="700" fill="#1E40AF">${vals[i]}</text>`;});
  document.getElementById('trend').innerHTML=`<svg width="100%" viewBox="0 0 ${W} ${H}" style="min-width:540px;display:block">
   <defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2563EB" stop-opacity="0.18"/><stop offset="1" stop-color="#2563EB" stop-opacity="0.02"/></linearGradient></defs>
-  ${grid}${xl}<polygon points="${area}" fill="url(#ag)"/><polyline points="${pts}" fill="none" stroke="#2563EB" stroke-width="2.2" stroke-linejoin="round"/>${dots}</svg>`;
+  ${grid}${xl}<polygon points="${area}" fill="url(#ag)"/><polyline points="${pts}" fill="none" stroke="#2563EB" stroke-width="3" stroke-linejoin="round"/>${dots}</svg>`;
 }
 /* ===== 오늘의 브리핑 ===== */
 function ymd(s){return new Date(s+"T00:00:00");}
@@ -536,7 +536,7 @@ function renderHealth(){
   {t:"⏱ 데이터 신선도",n:`최신 ${weeks[weeks.length-1]} 주`,d:`수집 파이프라인 정상 동작(매일 자동 갱신 기준). 끊기면 즉시 경보.`,stat:["good","정상"]},
   {t:"✅ 해결 신호",n:`수집 안 됨`,d:`Zendesk 종료 미실행 + CSAT 응답 0% → 해결률은 현재 측정 불가. 만족도 요청 발송 활성화 필요.`,stat:["bad","미수집"]},
  ];
- document.getElementById('health').innerHTML=`<div style="font-size:11px;font-weight:700;color:var(--gray);margin-bottom:2px">🔧 Zendesk 운영 건강성</div>`+items.map(it=>`<div class="hcard"><div class="ht">${it.t}<span class="hstat hs-${it.stat[0]}">${it.stat[1]}</span></div><div class="hn tnum">${it.n}</div><div class="hd">${it.d}</div></div>`).join('');
+ document.getElementById('health').innerHTML=items.map(it=>`<div class="hcard"><div class="ht">${it.t}<span class="hstat hs-${it.stat[0]}">${it.stat[1]}</span></div><div class="hn tnum">${it.n}</div><div class="hd">${it.d}</div></div>`).join('');
 }
 function renderCatSummary(){
  const maxT=Math.max(...OV_TOPICS.map(tp=>TOPIC_TOTAL[tp]));
@@ -705,10 +705,31 @@ function renderExp(){
  if(!rows.length){el.innerHTML='<div class="empty">조건에 맞는 티켓이 없습니다.</div>';return;}
  el.innerHTML=rows.map(t=>`<div class="tk"><div><div class="tk-topic"><span class="tk-dot" style="background:${TC[t.topic]}"></span>${t.topic}</div><div class="tk-detail">${t.detail}</div><div class="tk-cat">의도: ${t.cat}</div></div><div><div class="tk-text">${t.text||'—'}</div><div class="tk-id">#${t.id} · ${t.date}</div></div><div class="tk-meta"><span class="badge b-${t.status}">${STATUS_LBL[t.status]||t.status}</span><span class="badge ${sentClass(t.sent)}">${t.sent}</span><a href="#" onclick="return false" title="Zendesk 티켓 열기(데모)" style="font-size:9.5px;font-weight:700;color:var(--brand);text-decoration:none;border:1px solid #BFDBFE;border-radius:5px;padding:1px 5px">Zendesk ↗</a></div></div>`).join('');
 }
+/* 🤖 AI 운영 분석 메모 (D.ai 있을 때만 렌더, 없으면 규칙 기반 진단으로 폴백) */
+function renderAI(){
+ const el=document.getElementById('aimemo');if(!el)return;
+ const ai=D.ai;
+ if(!ai||(!ai.diagnosis&&!(ai.improvements||[]).length)){el.innerHTML='';return;}
+ const PB={"높음":"#F03E3E","중간":"#E67700","낮음":"#868E96"};
+ const imp=(ai.improvements||[]).slice(0,3).map((x,i)=>`<li style="margin-bottom:8px"><b style="color:#fff">${i+1}. ${x.title}</b>${x.priority?` <span style="font-size:9.5px;font-weight:700;color:#fff;background:${PB[x.priority]||'#868E96'};padding:1px 7px;border-radius:8px">${x.priority}</span>`:''}${x.why?`<div style="font-size:11.5px;color:#B9AEDB;margin-top:2px">${x.why}</div>`:''}</li>`).join('');
+ const sig=(ai.new_signals||[]).map(s=>`<li style="margin-bottom:4px">${s}</li>`).join('');
+ el.innerHTML=`<div style="background:linear-gradient(135deg,#1a1530,#241b3d);border:1px solid #3a2f5c;border-radius:14px;padding:18px 20px;margin-bottom:16px">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+   <span style="font-size:15px;font-weight:800;color:#fff">🤖 AI 운영 분석</span>
+   <span style="font-size:9.5px;font-weight:700;color:#1a1530;background:#C4B5FD;padding:2px 8px;border-radius:8px">검토 필요</span>
+   ${ai.updated?`<span style="margin-left:auto;font-size:10.5px;color:#9D90C4">${ai.updated} 갱신</span>`:''}
+  </div>
+  ${ai.headline?`<div style="font-size:14.5px;font-weight:700;line-height:1.5;margin-bottom:10px;color:#fff">${ai.headline}</div>`:''}
+  ${ai.diagnosis?`<div style="font-size:12.5px;line-height:1.7;color:#D6CFEA;margin-bottom:12px">${ai.diagnosis}</div>`:''}
+  ${sig?`<div style="font-size:11px;font-weight:700;color:#C4B5FD;margin-bottom:4px">🔎 신규 시그널</div><ul style="margin:0 0 12px;padding-left:18px;font-size:12px;line-height:1.6;color:#D6CFEA">${sig}</ul>`:''}
+  ${imp?`<div style="font-size:11px;font-weight:700;color:#C4B5FD;margin-bottom:6px">🛠 제품 개선 제안</div><ul style="margin:0;padding-left:18px;font-size:12.5px;line-height:1.55;color:#E8E4F3;list-style:none">${imp}</ul>`:''}
+  ${ai.week_change?`<div style="font-size:11.5px;color:#9D90C4;border-top:1px solid #3a2f5c;padding-top:10px;margin-top:10px">📅 주간 변화 · ${ai.week_change}</div>`:''}
+ </div>`;
+}
 
 /* inline onclick 핸들러용 전역 노출 (boot 지역함수 → window) */
 window.goTab=goTab;window.selectReason=selectReason;window.copyMacro=copyMacro;window.goExplore=goExplore;window.toggleF=toggleF;window.setTPeriod=setTPeriod;window.toggleLine=toggleLine;window.setPeriod=setPeriod;window.resetAll=resetAll;window.searchKw=searchKw;Object.defineProperty(window,'F',{get:()=>F,set:v=>{F=v},configurable:true});
-renderExec();renderTrend();renderBrief();renderHealth();renderCatSummary();renderTree();renderList();renderDetail();renderAutomation();renderSentiment();renderKeywords();renderTrackSummary();renderPeriodChips();renderLineLeg();renderLineChart();renderWhy();renderExp();
+renderExec();renderTrend();renderBrief();renderHealth();renderCatSummary();renderTree();renderList();renderDetail();renderAutomation();renderSentiment();renderKeywords();renderTrackSummary();renderPeriodChips();renderLineLeg();renderLineChart();renderWhy();renderExp();renderAI();
 }
 </script>
 </body>
