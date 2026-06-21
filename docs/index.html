@@ -463,8 +463,8 @@ const wByT={};D.weeks.forEach(w=>wByT[w]={});
 function renderExec(){
  const wkmax=D.weeks[D.weeks.length-1],first=D.weeks[0];
  const recentAvg=(D.recent4/4).toFixed(1),priorAvg=(D.prior4/4).toFixed(1);
- document.getElementById('exec').innerHTML=`<div class="exec"><div class="exec-lead">CDO 보고 요약 · Zendesk 도입 후 ${D.weeks.length}주 (${D.period})</div>
- <div class="exec-big">도입 후 누적 <span class="b">${D.total}건</span> 수집 — 주 평균 <span class="b">${(D.total/D.weeks.length).toFixed(1)}건</span>, 최근 4주 주평균 <em>${recentAvg}건</em>(직전 ${priorAvg}건)으로 <em>인입 증가 = 채널 안착</em>. 다만 증가분이 <span class="b">온보딩(가입·인증)</span>에 집중 → 제품 개선 필요 신호.</div>
+ document.getElementById('exec').innerHTML=`<div class="exec"><div class="exec-lead">보고 요약 · Zendesk 도입 후 ${D.weeks.length}주 (${D.period})</div>
+ <div class="exec-big">도입 후 누적 <span class="b">${D.total}건</span> 수집 — 주 평균 <span class="b">${(D.total/D.weeks.length).toFixed(1)}건</span>, 최근 4주 주평균 <em>${recentAvg}건</em>(직전 ${priorAvg}건)으로 <em>인입 증가 = 채널 안착</em>.<br>다만 증가분이 <span class="b">온보딩(가입·인증)</span>에 집중 → 제품 개선 필요 신호.</div>
  <div class="exec-row">
   <div class="exec-k"><div class="n tnum">${D.total}</div><div class="l">누적 문의(도입 후 전체)</div></div>
   <div class="exec-k"><div class="n tnum">${D.recent4} <span style="font-size:13px;color:#FCA5A5">▲${D.recent4-D.prior4}</span></div><div class="l">최근 4주 (직전 ${D.prior4})</div></div>
