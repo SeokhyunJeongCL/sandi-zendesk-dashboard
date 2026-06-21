@@ -425,6 +425,7 @@ window.addEventListener('DOMContentLoaded', async function() {
 });
 </script>
 
+<script>window.AI_DATA = {"updated": "2026-06-22 07:25", "model": "claude", "headline": "온보딩(가입·인증) 차단이 인입의 핵심 — 그 뒤에 '가입됨↔정보없음' 계정 데이터 불일치가 의심됩니다. CS 응대로는 못 막고 제품 수정이 필요합니다.", "diagnosis": "회원가입 문의 급증의 공통 원인은 '이미 가입된 번호/이메일' 중복 차단입니다. 특히 ①휴대폰 번호 변경 ②이직·재입사 ③신규 가입인데 '이미 가입됨'이라 막히는 케이스가 반복됩니다. 동시에 회사 이메일 인증은 '메일 미수신'과 '메일 지연으로 인증코드 만료'가 누적되어, 신규 사용자가 온보딩 단계에서 집중 이탈하고 있습니다. (모두 AI 추정 — 운영자 확인 필요)", "new_signals": ["데이터 불일치 의심: '이미 가입됨'이라는데 아이디 찾기·로그인에는 '정보 없음'으로 나오는 문의가 여러 건 — 계정 DB/중복판정 정합성 결함 가능성.", "비(非)앱 오인입: 용달·화물 가격, 청소·화장실·흡연 등 시설/물류 민원이 '기타'로 다수 유입 — 챗봇 라우팅/채널 안내 문제로 CS 부하를 부풀림.", "사원증만 보유한 협력사·공유오피스 사용자가 회사 이메일 인증을 통과하지 못하는 케이스."], "improvements": [{"title": "중복 판정 로직 개선 + 셀프 계정복구 플로우 신설", "why": "번호변경·재가입·이직 예외 처리, '가입됨↔찾기 정보없음' 데이터 정합성 점검까지 포함 — 회원가입 급증분의 핵심 해소", "priority": "높음"}, {"title": "회사 인증 대체수단(사원증 업로드/관리자 승인) + 인증메일 발송 점검", "why": "메일 미수신·지연(코드 만료)과 메일계정 없는 사용자가 반복적으로 인증에서 막힘", "priority": "높음"}, {"title": "비앱 시설/물류 문의 분리 라우팅", "why": "용달·청소·시설 민원이 앱 CS로 오인입 중 — 챗봇에서 별도 안내·분리하면 실제 앱 문의에 집중 가능", "priority": "중간"}], "week_change": "최근 회원가입(계정/설정) 문의가 가장 크게 증가 — 인입 증가분이 온보딩(가입·인증)에 집중. 시설/외부 오인입도 꾸준히 발생."};</script>
 <script>
 function boot(){
 const D=window.D;
@@ -715,7 +716,7 @@ function renderExp(){
 /* 🤖 AI 운영 분석 메모 (D.ai 있을 때만 렌더, 없으면 규칙 기반 진단으로 폴백) */
 function renderAI(){
  const el=document.getElementById('aimemo');if(!el)return;
- const ai=D.ai;
+ const ai=(typeof AI_DATA!=='undefined'&&AI_DATA&&Object.keys(AI_DATA).length)?AI_DATA:(D.ai||null);
  if(!ai||(!ai.diagnosis&&!(ai.improvements||[]).length)){el.innerHTML='';return;}
  const PB={"높음":"#F03E3E","중간":"#E67700","낮음":"#868E96"};
  const imp=(ai.improvements||[]).slice(0,3).map((x,i)=>`<li style="margin-bottom:8px"><b style="color:#fff">${i+1}. ${x.title}</b>${x.priority?` <span style="font-size:9.5px;font-weight:700;color:#fff;background:${PB[x.priority]||'#868E96'};padding:1px 7px;border-radius:8px">${x.priority}</span>`:''}${x.why?`<div style="font-size:11.5px;color:#B9AEDB;margin-top:2px">${x.why}</div>`:''}</li>`).join('');
