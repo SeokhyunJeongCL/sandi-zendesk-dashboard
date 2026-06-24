@@ -706,13 +706,16 @@ async function requestPin(){
   }
   document.getElementById('pw-err').textContent='\uC778\uC99D\uBC88\uD638 \uBC1C\uC1A1 \uC911...';
   try{
+    console.log('requestPin: sending OTP to', email);
     const res = await fetch(SB_URL+"/auth/v1/otp", {
       method:"POST",
       headers:{"apikey":SB_KEY,"Content-Type":"application/json"},
       body:JSON.stringify({email:email})
     });
+    console.log('requestPin: response status', res.status);
     if(!res.ok){
       const err = await res.json().catch(()=>({}));
+      console.error('requestPin error:', JSON.stringify(err));
       const code = err.error_code||''; const msg = (err.msg||err.message||'').toLowerCase();
       if(code==='otp_disabled'||msg.includes('not allowed')){
         throw new Error('등록되지 않은 이메일입니다.');
@@ -767,10 +770,12 @@ async function verifyPin(){
     });
     if(!res.ok){
       const err = await res.json().catch(()=>({}));
-      if(err.error_code==='otp_expired') throw new Error('인증번호가 만료되었습니다. 재요청해주세요.');
-      throw new Error(err.error_description || err.msg || '인증 실패');
+      console.error('verify error:', res.status, JSON.stringify(err));
+      if(err.error_code==='otp_expired') throw new Error('인증번호가 만료되었거나 올바르지 않습니다. 재요청해주세요.');
+      throw new Error((err.error_description || err.msg || '인증 실패') + ' [' + (err.error_code||res.status) + ']');
     }
     const data = await res.json();
+    console.log('verify ok, has access_token:', !!data.access_token);
     const token = data.access_token;
     _stopPinTimer();
     await _fetchData();
