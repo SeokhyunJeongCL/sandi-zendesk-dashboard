@@ -260,6 +260,196 @@ h3.blk{font-size:12.5px;font-weight:700;margin-bottom:12px}
 .scroll-anchor{scroll-margin-top:120px}
 /* v7: event marker for tracking chart */
 .evt-marker{stroke-dasharray:4 3}
+
+/* ── v7 Mobile Optimization ─────────────────────── */
+
+/* 1) Bottom tab nav on mobile */
+@media(max-width:680px){
+  .tabs{position:fixed;bottom:0;top:auto;left:0;right:0;z-index:70;border-top:1px solid var(--border);border-bottom:none;background:#fff;box-shadow:0 -2px 12px rgba(19,32,41,.06)}
+  .tabs-in{justify-content:space-around;gap:0;padding:0}
+  .tab{flex:1;flex-direction:column;gap:3px;padding:8px 4px 10px;font-size:11px;border-bottom:none;border-top:2.5px solid transparent;text-align:center;justify-content:center}
+  .tab.on{border-bottom:none;border-top-color:var(--brand)}
+  .top-in{height:46px}
+  .brand svg{height:14px}
+  .brand span{font-size:11px}
+  .head-tag{font-size:9px;padding:3px 8px}
+  .period{font-size:10px}
+  body{padding-bottom:62px}
+  .panel{padding:16px 0 80px}
+  .wrap{padding:0 14px}
+  .scroll-anchor{scroll-margin-top:60px}
+}
+
+/* 2) Touch targets: minimum 44px height for interactive elements */
+@media(max-width:680px){
+  .chip{padding:10px 14px;font-size:12px;min-height:44px;display:inline-flex;align-items:center}
+  .pf{padding:10px 16px;font-size:12px;min-height:44px;display:inline-flex;align-items:center}
+  .btn{padding:12px 20px;font-size:13px;min-height:44px}
+  .btn.ghost{padding:11px 18px}
+  .kw{padding:10px 14px;font-size:12px;min-height:44px;display:inline-flex;align-items:center}
+  .rrow{padding:14px 12px;min-height:52px}
+  .clearall{padding:10px 16px;min-height:44px}
+  .filter-toggle{padding:10px 12px;min-height:44px;font-size:12px}
+  .macro-copy{padding:8px 16px;min-height:40px;font-size:11px}
+  .tab{min-height:52px}
+}
+
+/* 3) Executive summary mobile layout */
+@media(max-width:680px){
+  .exec{padding:14px 16px;border-radius:12px}
+  .exec-big{font-size:14px;line-height:1.55}
+  .exec-row{gap:16px}
+  .exec-k .n{font-size:20px}
+  .exec-k .l{font-size:9.5px}
+  .exec-lead{font-size:10px}
+}
+
+/* 4) Line chart: remove min-width, allow natural flow */
+@media(max-width:680px){
+  .stack-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -14px;padding:0 14px}
+  .stack-wrap svg{min-width:480px!important}
+  .lchart-leg{gap:8px;font-size:11px}
+  .lchart-leg span{gap:4px}
+}
+
+/* 5) Dumbbell chart mobile */
+@media(max-width:680px){
+  .slope-lbl{width:70px;font-size:10px}
+  .slope-d{width:44px;font-size:10px}
+  .slope-head{padding-left:74px;font-size:9px}
+  .slope-dot{width:16px;height:16px;font-size:8px}
+}
+
+/* 6) Master-Detail mobile: detail as expandable section below list */
+@media(max-width:900px){
+  .md{grid-template-columns:1fr;gap:12px}
+  .dp{position:static;max-height:none}
+}
+@media(max-width:680px){
+  .rlist{padding:4px}
+  .rrow{gap:8px;padding:12px 10px}
+  .rname{font-size:12px}
+  .rcount .n{font-size:14px}
+  .rba{flex-wrap:wrap;gap:4px}
+  .rba-track{max-width:100px}
+  .dp{padding:14px 16px;border-radius:var(--r)}
+  .dp-title{font-size:14px}
+  .dp-ba{flex-wrap:wrap;gap:10px;padding:10px 12px}
+  .dp-ba .x .n{font-size:17px}
+  .dp-ba .arr{font-size:15px}
+  .samp-i{padding:8px 10px;font-size:11.5px}
+  .act-box{padding:12px 14px}
+  .macro-t{font-size:11px;padding:8px 10px}
+}
+
+/* 7) Ticket explore: filter UX on mobile — collapsed by default */
+@media(max-width:680px){
+  .exp-filters{padding:12px 14px}
+  .frow{margin-bottom:8px}
+  .flbl{width:48px;font-size:10px}
+  .srch{min-width:120px;padding:10px 14px;font-size:14px;min-height:44px}
+  .tk{padding:12px 14px;gap:8px}
+  .tk-text{font-size:12px}
+  .tk-topic{font-size:12px}
+  .tk-id{font-size:10px}
+  .exp-bar{padding:10px 14px}
+  .filter-summary{padding:8px 14px;gap:6px}
+  .filter-summary .fs-tag{padding:6px 12px;font-size:11px;min-height:36px;display:inline-flex;align-items:center}
+  /* auto-collapse filters on mobile */
+  .exp-filters .frow:not(.frow-main){display:none}
+  .exp-filters.expanded .frow{display:flex}
+  .exp-filters .frow-main{display:flex}
+}
+
+/* 8) Cards mobile padding */
+@media(max-width:680px){
+  .card{border-radius:12px}
+  .kpi{padding:12px 14px}
+  .kpi .kn{font-size:20px}
+  .hcard{padding:12px 14px}
+  .hcard .hn{font-size:17px}
+  .brief-card{padding:14px 16px}
+  .bitem{gap:8px;padding:7px 0}
+  .bico{width:24px;height:24px;font-size:11px}
+  .btxt{font-size:11.5px}
+  .todo-row{gap:7px;padding:7px 0}
+  .tsum-c{padding:12px 14px}
+  .tsum-c .n{font-size:20px}
+  .catrow{gap:8px;padding:7px 0;font-size:11.5px}
+  .catrow .cl{width:72px;font-size:11px}
+  .catrow .cd{width:46px;font-size:10px}
+}
+
+/* 9) Section headers mobile */
+@media(max-width:680px){
+  .sec-h{font-size:14px;padding-left:11px;margin-bottom:3px}
+  .sec-sub{font-size:11.5px;margin-bottom:12px}
+  .sec-tag{font-size:9px;padding:2px 8px}
+}
+
+/* 10) AI insight cards */
+@media(max-width:680px){
+  .ai3{gap:12px}
+  .auto-big{font-size:26px}
+  .auto-sub{gap:12px}
+  .sb-row .l{width:60px;font-size:10.5px}
+  .sb-row{gap:6px;margin-bottom:6px}
+}
+
+/* 11) Diagnosis dark box */
+@media(max-width:680px){
+  .diag{padding:14px 16px;border-radius:12px}
+  .diag-big{font-size:14px}
+  .diag-foot{font-size:9.5px}
+}
+
+/* 12) AI memo card */
+@media(max-width:680px){
+  #aimemo>div{padding:14px 16px!important;border-radius:12px!important}
+}
+
+/* 13) Note text */
+@media(max-width:680px){
+  .note{font-size:10.5px}
+}
+
+/* 14) Auth card mobile */
+@media(max-width:440px){
+  .auth-card{width:calc(100% - 32px);padding:28px 24px 24px}
+  .auth-title{font-size:17px}
+  .auth-sub{font-size:12px;margin-bottom:20px}
+}
+
+/* 15) Brief grid mobile single col is already handled at 820px */
+
+/* 16) Toast mobile */
+@media(max-width:680px){
+  .toast{left:16px;right:16px;transform:translateX(0) translateY(80px);border-radius:10px;font-size:12px;padding:12px 16px}
+  .toast.on{transform:translateX(0) translateY(0)}
+}
+
+/* 17) Why rows mobile */
+@media(max-width:680px){
+  .why-row{gap:7px;font-size:11px}
+  .why-dir{width:40px;font-size:10px}
+}
+
+/* 18) Treemap legend */
+@media(max-width:680px){
+  .tmap-leg{gap:10px;font-size:10px}
+}
+
+/* 19) Fullscreen filter overlay on mobile */
+@media(max-width:680px){
+  .exp-filters.expanded{position:fixed;inset:0;z-index:80;background:#fff;overflow-y:auto;padding:16px;padding-bottom:80px}
+  .exp-filters.expanded .frow-main .filter-toggle::after{content:'';display:none}
+}
+
+/* 20) Prevent horizontal overflow */
+@media(max-width:680px){
+  html,body{overflow-x:hidden}
+  .wrap{overflow-x:hidden}
+}
 </style>
 </head>
 <body>
@@ -462,7 +652,7 @@ document.getElementById('foot').textContent=`SANDI CS 운영·개선 시스템 �
 const R2T={};D.reasons.forEach(r=>{R2T[r.name]=r.topic;});
 D.tickets.forEach(t=>{t.topic=R2T[t.detail]||t.topic;});
 let sel=0;
-function goTab(i,el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));if(el)el.classList.add('on');else{const b=document.querySelector('[data-t="'+i+'"]');if(b)b.classList.add('on');}document.querySelectorAll('.panel').forEach((p,j)=>{p.classList.toggle('on',j===i);});window.scrollTo({top:0,behavior:'smooth'});}
+function goTab(i,el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));if(el)el.classList.add('on');else{const b=document.querySelector('[data-t="'+i+'"]');if(b)b.classList.add('on');}document.querySelectorAll('.panel').forEach((p,j)=>{p.classList.toggle('on',j===i);});window.scrollTo({top:0,behavior:'smooth'});if(isMobile()&&typeof updateFilterSummary==='function')updateFilterSummary();}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2200);}
 
 /* diagnosis */
@@ -602,7 +792,7 @@ function renderList(){
   </div>`;
  }).join('');
 }
-function selectReason(i){sel=i;renderList();renderDetail();renderTree();const anchor=document.getElementById('detail-anchor');if(anchor)anchor.scrollIntoView({behavior:'smooth',block:'start'});}
+function selectReason(i){sel=i;renderList();renderDetail();renderTree();if(isMobile()){const dp=document.getElementById('dp');if(dp)dp.scrollIntoView({behavior:'smooth',block:'start'});}else{const anchor=document.getElementById('detail-anchor');if(anchor)anchor.scrollIntoView({behavior:'smooth',block:'start'});}}
 function renderDetail(){
  const r=D.reasons[sel],c=TC[r.topic],tcol=TRC[r.track]||"#64748B";
  const arr=r.delta>0?`<span class="arr" style="color:#DC2626">▲</span>`:(r.delta<0?`<span class="arr" style="color:#16A34A">▼</span>`:`<span class="arr" style="color:#94A3B8">–</span>`);
@@ -724,8 +914,9 @@ function toggleF(key,val){F[key]=F[key]===val?null:val;renderExp();updateFilterS
 function goExplore(name){goTab(3,document.querySelector('[data-t="3"]'));F={detail:name,topic:null,status:null,sent:null,q:"",period:'all'};document.getElementById('srch').value="";renderTPeriod();renderExp();updateFilterSummary();collapseFilters();}
 function resetAll(){F={detail:null,topic:null,status:null,sent:null,q:"",period:'all'};document.getElementById('srch').value="";renderTPeriod();renderExp();updateFilterSummary();const el=document.getElementById('expFilters');if(el)el.classList.remove('collapsed');const btn=document.getElementById('filterToggle');if(btn)btn.textContent='필터 접기 ▴';}
 document.getElementById('srch').addEventListener('input',e=>{F.q=e.target.value;renderExp();updateFilterSummary();});
-function toggleFilters(){const el=document.getElementById('expFilters');const btn=document.getElementById('filterToggle');if(el.classList.contains('collapsed')){el.classList.remove('collapsed');btn.textContent='필터 접기 ▴';}else{el.classList.add('collapsed');btn.textContent='필터 펼치기 ▾';}}
-function collapseFilters(){const el=document.getElementById('expFilters');const btn=document.getElementById('filterToggle');el.classList.add('collapsed');btn.textContent='필터 펼치기 ▾';}
+function isMobile(){return window.innerWidth<=680;}
+function toggleFilters(){const el=document.getElementById('expFilters');const btn=document.getElementById('filterToggle');if(isMobile()){if(el.classList.contains('expanded')){el.classList.remove('expanded');btn.textContent='필터 열기 ▾';}else{el.classList.add('expanded');btn.textContent='닫기 ✕';}}else{if(el.classList.contains('collapsed')){el.classList.remove('collapsed');btn.textContent='필터 접기 ▴';}else{el.classList.add('collapsed');btn.textContent='필터 펼치기 ▾';}}}
+function collapseFilters(){const el=document.getElementById('expFilters');const btn=document.getElementById('filterToggle');if(isMobile()){el.classList.remove('expanded');btn.textContent='필터 열기 ▾';}else{el.classList.add('collapsed');btn.textContent='필터 펼치기 ▾';}}
 function updateFilterSummary(){const sm=document.getElementById('filterSummary');if(!sm)return;let tags=[];if(F.detail)tags.push({k:'detail',l:F.detail});if(F.topic)tags.push({k:'topic',l:F.topic});if(F.status)tags.push({k:'status',l:STATUS_LBL[F.status]||F.status});if(F.sent)tags.push({k:'sent',l:F.sent});if(F.q)tags.push({k:'q',l:'"'+F.q+'"'});if(F.period&&F.period!=='all'){const p=TPERIODS.find(x=>x.k===F.period);if(p)tags.push({k:'period',l:p.l});}if(tags.length){sm.style.display='flex';sm.innerHTML='<span class="fs-label">활성 필터</span>'+tags.map(t=>'<span class="fs-tag" onclick="clearOneFilter(\''+t.k+'\')">'+t.l+' ✕</span>').join('');}else{sm.style.display='none';sm.innerHTML='';}}
 function clearOneFilter(k){if(k==='q'){F.q='';document.getElementById('srch').value='';}else if(k==='period'){F.period='all';renderTPeriod();}else{F[k]=null;}renderExp();updateFilterSummary();}
 const sentClass=s=>s==="긍정"?"b-pos":s==="부정"?"b-neg":"b-neu";
@@ -773,7 +964,7 @@ function renderSlope(){
 }
 
 /* inline onclick 핸들러용 전역 노출 (boot 지역함수 → window) */
-window.goTab=goTab;window.selectReason=selectReason;window.copyMacro=copyMacro;window.goExplore=goExplore;window.toggleF=toggleF;window.setTPeriod=setTPeriod;window.toggleLine=toggleLine;window.setAllLines=setAllLines;window.setPeriod=setPeriod;window.resetAll=resetAll;window.searchKw=searchKw;window.toggleFilters=toggleFilters;window.clearOneFilter=clearOneFilter;Object.defineProperty(window,'F',{get:()=>F,set:v=>{F=v},configurable:true});
+window.isMobile=isMobile;window.goTab=goTab;window.selectReason=selectReason;window.copyMacro=copyMacro;window.goExplore=goExplore;window.toggleF=toggleF;window.setTPeriod=setTPeriod;window.toggleLine=toggleLine;window.setAllLines=setAllLines;window.setPeriod=setPeriod;window.resetAll=resetAll;window.searchKw=searchKw;window.toggleFilters=toggleFilters;window.clearOneFilter=clearOneFilter;Object.defineProperty(window,'F',{get:()=>F,set:v=>{F=v},configurable:true});
 renderExec();renderTrend();renderBrief();renderHealth();renderCatSummary();renderTree();renderList();renderDetail();renderAutomation();renderSentiment();renderKeywords();renderTrackSummary();renderPeriodChips();renderLineLeg();renderLineChart();renderWhy();renderExp();renderAI();renderSlope();
 }
 </script>
