@@ -674,6 +674,7 @@ window.addEventListener('DOMContentLoaded', async function(){
 <script>
 function boot(){
 function esc(s){if(!s)return '';const d=document.createElement('div');d.textContent=String(s);return d.innerHTML;}
+function mask(s){if(!s)return '';s=String(s);s=s.replace(/([A-Za-z0-9._%+-]{2})[A-Za-z0-9._%+-]*@([A-Za-z0-9]{2,3})[A-Za-z0-9.-]*\.([A-Za-z]{2,})/g,'$1***@$2***.$3');s=s.replace(/\b(0\d{1,2})[-.\s]?(\d{3,4})[-.\s]?(\d{4})\b/g,'$1-****-$3');s=s.replace(/([\uAC00-\uD7AF])([\uAC00-\uD7AF]{1,2})([\uAC00-\uD7AF])(님)/g,function(_,a,b,c,d){return a+'*'.repeat(b.length)+c+d;});return s;}
 const D=window.D;
 const TC={"로그인/인증":"#F03E3E","계정/설정":"#E67700","앱오류":"#FAB005","기능사용법":"#1C7ED6","결제/요금":"#EA27C2","기타":"#8E8E8E"};
 const TRC={"제품 수정":"#F03E3E","자동화":"#1C7ED6","UX·온보딩":"#EA27C2","기타":"#8E8E8E"};
@@ -830,7 +831,7 @@ function selectReason(i){sel=i;renderList();renderDetail();renderTree();if(isMob
 function renderDetail(){
  const r=D.reasons[sel],c=TC[r.topic],tcol=TRC[r.track]||"#64748B";
  const arr=r.delta>0?`<span class="arr" style="color:#DC2626">▲</span>`:(r.delta<0?`<span class="arr" style="color:#16A34A">▼</span>`:`<span class="arr" style="color:#94A3B8">–</span>`);
- const samp=(r.samples||[]).map(s=>`<div class="samp-i">${esc(s.text)}<div class="m"><span class="badge b-${s.status}">${STATUS_LBL[s.status]||s.status}</span><span class="badge ${s.sent==='부정'?'b-neg':s.sent==='긍정'?'b-pos':'b-neu'}">${s.sent}</span><span style="font-size:9.5px;color:var(--muted)">#${s.id} · ${s.date}</span></div></div>`).join('');
+ const samp=(r.samples||[]).map(s=>`<div class="samp-i">${esc(mask(s.text))}<div class="m"><span class="badge b-${s.status}">${STATUS_LBL[s.status]||s.status}</span><span class="badge ${s.sent==='부정'?'b-neg':s.sent==='긍정'?'b-pos':'b-neu'}">${s.sent}</span><span style="font-size:9.5px;color:var(--muted)">#${s.id} · ${s.date}</span></div></div>`).join('');
  document.getElementById('dp').innerHTML=`
   <div class="dp-title"><span class="rdot" style="width:9px;height:9px;background:${c}"></span>${r.name}</div>
   <div class="dp-sub">주제: ${r.topic} · 전체 ${r.total}건 · 부정 ${r.neg}건</div>
@@ -965,7 +966,7 @@ function renderExp(){
  document.getElementById('actf').innerHTML=act.map(([k,l])=>`<span class="chip on" style="cursor:pointer" onclick="toggleF('${k}',F['${k}'])">${l} ✕</span>`).join('');
  const el=document.getElementById('list');
  if(!rows.length){el.innerHTML='<div class="empty">조건에 맞는 티켓이 없습니다.</div>';return;}
- el.innerHTML=rows.map(t=>`<div class="tk"><div><div class="tk-topic"><span class="tk-dot" style="background:${TC[t.topic]}"></span>${t.topic}</div><div class="tk-detail">${t.detail}</div><div class="tk-cat">의도: ${t.cat}</div></div><div><div class="tk-text">${esc(t.text||'—')}</div><div class="tk-id">#${t.id} · ${t.date}</div></div><div class="tk-meta"><span class="badge b-${t.status}">${STATUS_LBL[t.status]||t.status}</span><span class="badge ${sentClass(t.sent)}">${t.sent}</span><a href="https://sicorphelp.zendesk.com/agent/tickets/${t.id}" target="_blank" rel="noopener noreferrer" title="Zendesk 티켓 열기" style="font-size:9.5px;font-weight:700;color:var(--brand);text-decoration:none;border:1px solid #BFDBFE;border-radius:5px;padding:1px 5px">Zendesk ↗</a></div></div>`).join('');
+ el.innerHTML=rows.map(t=>`<div class="tk"><div><div class="tk-topic"><span class="tk-dot" style="background:${TC[t.topic]}"></span>${t.topic}</div><div class="tk-detail">${t.detail}</div><div class="tk-cat">의도: ${t.cat}</div></div><div><div class="tk-text">${esc(mask(t.text||'—'))}</div><div class="tk-id">#${t.id} · ${t.date}</div></div><div class="tk-meta"><span class="badge b-${t.status}">${STATUS_LBL[t.status]||t.status}</span><span class="badge ${sentClass(t.sent)}">${t.sent}</span><a href="https://sicorphelp.zendesk.com/agent/tickets/${t.id}" target="_blank" rel="noopener noreferrer" title="Zendesk 티켓 열기" style="font-size:9.5px;font-weight:700;color:var(--brand);text-decoration:none;border:1px solid #BFDBFE;border-radius:5px;padding:1px 5px">Zendesk ↗</a></div></div>`).join('');
 }
 /* 🤖 AI 운영 분석 메모 (D.ai 있을 때만 렌더, 없으면 규칙 기반 진단으로 폴백) */
 function renderAI(){
