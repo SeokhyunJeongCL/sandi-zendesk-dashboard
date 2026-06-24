@@ -659,7 +659,14 @@ async function resendPin(){
       headers:{"apikey":SB_KEY,"Content-Type":"application/json"},
       body:JSON.stringify({email:_otpEmail})
     });
-    if(!res.ok) throw new Error('발송 실패');
+    if(!res.ok){
+      const err = await res.json().catch(()=>({}));
+      const code = err.error_code||''; const msg = (err.msg||err.message||'').toLowerCase();
+      if(res.status===429 || code==='over_email_send_rate_limit' || msg.includes('rate limit')){
+        throw new Error('이메일 발송 한도 초과. 잠시 후 다시 시도해주세요.');
+      }
+      throw new Error('발송 실패. 잠시 후 다시 시도해주세요.');
+    }
     document.getElementById('pw-err').textContent='';
     document.getElementById('pin').value='';
     document.getElementById('pin').disabled=false;
@@ -706,10 +713,14 @@ async function requestPin(){
     });
     if(!res.ok){
       const err = await res.json().catch(()=>({}));
-      if(err.error_code==='otp_disabled'||err.msg?.includes('not allowed')){
-        throw new Error('\uB4F1\uB85D\uB418\uC9C0 \uC54A\uC740 \uC774\uBA54\uC77C\uC785\uB2C8\uB2E4.');
+      const code = err.error_code||''; const msg = (err.msg||err.message||'').toLowerCase();
+      if(code==='otp_disabled'||msg.includes('not allowed')){
+        throw new Error('등록되지 않은 이메일입니다.');
       }
-      throw new Error(err.msg || '\uBC1C\uC1A1 \uC2E4\uD328');
+      if(res.status===429 || code==='over_email_send_rate_limit' || msg.includes('rate limit')){
+        throw new Error('이메일 발송 한도 초과. 잠시 후 다시 시도해주세요.');
+      }
+      throw new Error(err.msg || '발송 실패');
     }
     _otpEmail = email;
     document.getElementById('step1').style.display='none';
