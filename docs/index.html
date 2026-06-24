@@ -195,6 +195,9 @@ h3.blk{font-size:12.5px;font-weight:700;margin-bottom:12px}
 .pfilter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
 .pf{font-size:11px;font-weight:600;padding:7px 16px;border-radius:100px;border:1px solid var(--border);background:#fff;color:var(--gray);cursor:pointer;font-family:inherit;transition:all .12s}
 .pf:hover{border-color:var(--brand);color:var(--brand)}.pf.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.drange{display:inline-flex;gap:6px;align-items:center;margin-left:8px}.drange input[type="date"]{font-size:10.5px;font-family:inherit;border:1px solid var(--border);border-radius:8px;padding:4px 8px;color:var(--ink);outline:none;background:#fff}.drange input[type="date"]:focus{border-color:var(--accent)}.drange .sep{font-size:10px;color:var(--muted)}
+.dbtn{font-size:10px;font-weight:700;border:1px solid var(--border);background:#fff;border-radius:6px;padding:3px 10px;cursor:pointer;color:var(--gray);font-family:inherit}.dbtn:hover{border-color:var(--accent);color:var(--accent)}
+.tsum-c .n small{font-size:11px;font-weight:600;color:var(--muted)}
 /* 선 그래프 */
 .lchart-leg{display:flex;gap:13px;flex-wrap:wrap;font-size:10.5px;color:var(--sub)}
 .lchart-leg span{display:inline-flex;align-items:center;gap:5px;cursor:pointer;user-select:none}
@@ -483,15 +486,15 @@ h3.blk{font-size:12.5px;font-weight:700;margin-bottom:12px}
 <div class="wrap">
 <!-- ===== 전체 현황 (Overview) ===== -->
 <div class="panel on" id="pOV">
-  <!-- v7: 브리핑을 최상단으로 — 사용자가 아침에 가장 먼저 봐야 할 정보 -->
+  <div id="exec"></div>
+
   <div class="sec-h">오늘의 브리핑</div>
   <div class="sec-sub">어제의 특이사항과 오늘 할 일을 먼저 확인합니다. 클릭하면 진단 → 추적 → 티켓으로 이어집니다.</div>
   <div id="brief" style="margin-bottom:var(--gap-lg)"></div>
 
-  <div id="exec"></div>
-
   <div class="sec-h" style="margin-top:var(--gap-lg)">인입 추이</div>
   <div class="sec-sub">Zendesk 도입 이후 주별 총 인입건수입니다. 주제별 구성은 진단 탭, 시간변화는 추적 탭에서 확인하세요.</div>
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span class="drange"><input type="date" id="ovFrom"><span class="sep">~</span><input type="date" id="ovTo"></span><button class="dbtn" onclick="applyOvRange()">적용</button><button class="dbtn" onclick="resetOvRange()">초기화</button></div>
   <div class="card" style="padding:18px 20px;margin-bottom:var(--gap-md)"><div class="stack-wrap"><div id="trend"></div></div></div>
 
   <div class="sec-h">운영 건강성</div>
@@ -561,7 +564,7 @@ h3.blk{font-size:12.5px;font-weight:700;margin-bottom:12px}
     <!-- v7: 필터 상단에 검색 + 활성 필터 요약 -->
     <div class="exp-filters" id="expFilters">
       <div class="frow frow-main"><span class="flbl">검색</span><input class="srch" id="srch" placeholder="티켓 내용 검색…"><button class="clearall" onclick="resetAll()">전체 해제</button><button class="filter-toggle" id="filterToggle" onclick="toggleFilters()">필터 펼치기 ▾</button></div>
-      <div class="frow"><span class="flbl">기간</span><span id="fPeriod"></span></div>
+      <div class="frow"><span class="flbl">기간</span><span id="fPeriod"></span><span class="drange"><input type="date" id="expFrom"><span class="sep">~</span><input type="date" id="expTo"><button class="dbtn" onclick="applyExpRange()">적용</button></span></div>
       <div class="frow"><span class="flbl">사유</span><span id="fDetail"></span></div>
       <div class="frow"><span class="flbl">주제</span><span id="fTopic"></span></div>
       <div class="frow"><span class="flbl">상태</span><span id="fStatus"></span></div>
@@ -690,6 +693,9 @@ D.tickets.forEach(t=>{t.topic=R2T[t.detail]||t.topic;});
 let sel=0;
 function goTab(i,el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));if(el)el.classList.add('on');else{const b=document.querySelector('[data-t="'+i+'"]');if(b)b.classList.add('on');}document.querySelectorAll('.panel').forEach((p,j)=>{p.classList.toggle('on',j===i);});window.scrollTo({top:0,behavior:'smooth'});if(isMobile()&&typeof updateFilterSummary==='function')updateFilterSummary();}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2200);}
+/* ===== 날짜 관련 유틸 ===== */
+const WEEK_DATES={};D.tickets.forEach(t=>{const dt=new Date(t.date+'T00:00:00');const day=(dt.getDay()+6)%7;dt.setDate(dt.getDate()-day);const m=String(dt.getMonth()+1).padStart(2,'0'),d=String(dt.getDate()).padStart(2,'0');const lbl=m+'/'+d;if(!WEEK_DATES[lbl])WEEK_DATES[lbl]=dt.toISOString().substring(0,10);});
+let ovRange=null;
 
 /* diagnosis */
 const surge=D.reasons.slice().sort((a,b)=>b.delta-a.delta)[0];
@@ -727,7 +733,9 @@ function renderExec(){
  </div></div>`;
 }
 function renderTrend(){
- const W=1000,H=300,PL=44,PB=36,PT=24,PR=24,weeks=D.weeks;
+ const W=1000,H=300,PL=44,PB=36,PT=24,PR=24;
+ let weeks=D.weeks;
+ if(ovRange){const from=ovRange.from,to=ovRange.to;weeks=D.weeks.filter(w=>{const wd=WEEK_DATES[w];return wd&&wd>=from&&wd<=to;});if(weeks.length<2){document.getElementById('trend').innerHTML='<div class="empty">선택 기간에 2주 이상의 데이터가 필요합니다.</div>';return;}}
  const vals=weeks.map(w=>D.wktot[w]||0);
  const mxy=Math.max(...vals,1),step=Math.max(1,Math.ceil(mxy/4));
  const X=i=>PL+i*((W-PL-PR)/(weeks.length-1));
@@ -741,6 +749,8 @@ function renderTrend(){
   <defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2563EB" stop-opacity="0.18"/><stop offset="1" stop-color="#2563EB" stop-opacity="0.02"/></linearGradient></defs>
   ${grid}${xl}<polygon points="${area}" fill="url(#ag)"/><polyline points="${pts}" fill="none" stroke="#2563EB" stroke-width="3" stroke-linejoin="round"/>${dots}</svg>`;
 }
+function applyOvRange(){const f=document.getElementById('ovFrom').value,t=document.getElementById('ovTo').value;if(!f||!t){toast('시작일과 종료일을 모두 입력하세요');return;}ovRange={from:f,to:t};renderTrend();}
+function resetOvRange(){ovRange=null;document.getElementById('ovFrom').value='';document.getElementById('ovTo').value='';renderTrend();}
 /* ===== 오늘의 브리핑 ===== */
 function ymd(s){return new Date(s+"T00:00:00");}
 function renderBrief(){
@@ -853,14 +863,14 @@ function renderTrackSummary(){
  const weeks=curWeeks();
  const total=weeks.reduce((s,w)=>s+OV_TOPICS.reduce((a,tp)=>a+(wByT[w][tp]||0),0),0);
  const half=Math.ceil(weeks.length/2);
- const deltas=OV_TOPICS.map(tp=>{let f=0,l=0;weeks.forEach((w,i)=>{const v=wByT[w][tp]||0;if(i<half)f+=v;else l+=v;});return {tp,d:l-f};});
+ const deltas=OV_TOPICS.map(tp=>{let f=0,l=0;weeks.forEach((w,i)=>{const v=wByT[w][tp]||0;if(i<half)f+=v;else l+=v;});return {tp,f,l,d:l-f};});
  const up=deltas.slice().sort((a,b)=>b.d-a.d)[0];
  const dn=deltas.slice().sort((a,b)=>a.d-b.d)[0];
  const net=deltas.reduce((s,x)=>s+x.d,0);
  const cards=[
   {l:`${weeks[0]}~${weeks[weeks.length-1]} 인입`,n:total,c:'#2563EB',d:`주평균 ${(total/weeks.length).toFixed(1)}건`},
-  {l:'가장 늘어난 주제',n:(up&&up.d>0)?'▲'+up.d:'–',c:'#DC2626',d:(up&&up.d>0)?up.tp:'증가 없음'},
-  {l:'가장 줄어든 주제',n:(dn&&dn.d<0)?'▼'+Math.abs(dn.d):'–',c:'#16A34A',d:(dn&&dn.d<0)?dn.tp:'감소 없음'},
+  {l:'가장 늘어난 주제',n:(up&&up.d>0)?`${up.f}<small>건</small> → ${up.l}<small>건</small>`:'–',c:'#DC2626',d:(up&&up.d>0)?`${up.tp} · +${up.d}건`:'증가 없음'},
+  {l:'가장 줄어든 주제',n:(dn&&dn.d<0)?`${dn.f}<small>건</small> → ${dn.l}<small>건</small>`:'–',c:'#16A34A',d:(dn&&dn.d<0)?`${dn.tp} · ${dn.d}건`:'감소 없음'},
   {l:'전체 순변화',n:(net>0?'▲':net<0?'▼':'±')+Math.abs(net),c:net>0?'#DC2626':net<0?'#16A34A':'#64748B',d:'전·후반부 비교'},
  ];
  document.getElementById('trackSummary').innerHTML=`<div class="tsum">`+cards.map(k=>`<div class="tsum-c"><div class="l">${k.l}</div><div class="n tnum" style="color:${k.c}">${k.n}</div><div class="d">${k.d}</div></div>`).join('')+`</div>`;
@@ -934,31 +944,33 @@ function renderKeywords(){
  document.getElementById('kwBox').innerHTML=`<div class="ai-h">🔤 고객이 쓰는 말 <span style="font-weight:600;color:var(--muted)">클릭→티켓 검색</span></div><div class="kwrap">`+
   ks.map(k=>`<span class="kw" style="font-size:${(10.5+k.n/mx*6).toFixed(1)}px" onclick="searchKw('${k.w.replace(/'/g,"\\'")}')">${k.w}<b>${k.n}</b></span>`).join('')+`</div>`;
 }
-function searchKw(w){goTab(3,document.querySelector('[data-t="3"]'));F={detail:null,topic:null,status:null,sent:null,q:w,period:'all'};const s=document.getElementById('srch');if(s)s.value=w;renderTPeriod();renderExp();updateFilterSummary();collapseFilters();}
+function searchKw(w){goTab(3,document.querySelector('[data-t="3"]'));F={detail:null,topic:null,status:null,sent:null,q:w,period:'all',dateFrom:null,dateTo:null};const s=document.getElementById('srch');if(s)s.value=w;const ef=document.getElementById('expFrom'),et=document.getElementById('expTo');if(ef)ef.value='';if(et)et.value='';renderTPeriod();renderExp();updateFilterSummary();collapseFilters();}
 
 /* explore */
 const byDetail={},byTopic={};D.tickets.forEach(t=>{byDetail[t.detail]=(byDetail[t.detail]||0)+1;byTopic[t.topic]=(byTopic[t.topic]||0)+1;});
 const LASTDATE=D.tickets.map(t=>t.date).sort()[D.tickets.length-1];
 const TPERIODS=[{k:'all',l:'전체',days:99999},{k:'90',l:'최근 90일',days:90},{k:'30',l:'최근 30일',days:30},{k:'14',l:'최근 14일',days:14},{k:'7',l:'최근 7일',days:7}];
-function inPeriod(date){if(F.period==='all'||!F.period)return true;const p=TPERIODS.find(x=>x.k===F.period);const cut=new Date(ymd(LASTDATE).getTime()-p.days*86400000);return ymd(date)>cut;}
-let F={detail:null,topic:null,status:null,sent:null,q:"",period:'all'};
+function inPeriod(date){if(F.period==='all'||!F.period)return true;if(F.period==='custom'&&F.dateFrom&&F.dateTo){const d=ymd(date);return d>=ymd(F.dateFrom)&&d<=ymd(F.dateTo);}const p=TPERIODS.find(x=>x.k===F.period);if(!p)return true;const cut=new Date(ymd(LASTDATE).getTime()-p.days*86400000);return ymd(date)>cut;}
+let F={detail:null,topic:null,status:null,sent:null,q:"",period:'all',dateFrom:null,dateTo:null};
 function chips(id,key,obj,fmt){document.getElementById(id).innerHTML=Object.entries(obj).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span class="chip" data-k="${k}" data-key="${key}" onclick="toggleF('${key}','${k.replace(/'/g,"\\'")}')">${fmt?fmt(k):k}<span class="c">${v}</span></span>`).join('');}
 function renderTPeriod(){document.getElementById('fPeriod').innerHTML=TPERIODS.map(p=>`<span class="chip ${F.period===p.k?'on':''}" onclick="setTPeriod('${p.k}')">${p.l}</span>`).join('');}
-function setTPeriod(k){F.period=k;renderTPeriod();renderExp();updateFilterSummary();}
-chips('fDetail','detail',byDetail);chips('fTopic','topic',byTopic);chips('fStatus','status',D.byStatus,k=>STATUS_LBL[k]||k);chips('fSent','sent',D.bySent);renderTPeriod();
+function setTPeriod(k){F.period=k;F.dateFrom=null;F.dateTo=null;const ef=document.getElementById('expFrom'),et=document.getElementById('expTo');if(ef)ef.value='';if(et)et.value='';renderTPeriod();renderExp();updateFilterSummary();}
+document.getElementById('fDetail').innerHTML=D.reasons.map(r=>{const v=byDetail[r.name]||0;return `<span class="chip" data-k="${r.name}" data-key="detail" onclick="toggleF('detail','${r.name.replace(/'/g,"\\'")}')">${r.name}<span class="c">${v}</span></span>`;}).join('');chips('fTopic','topic',byTopic);chips('fStatus','status',D.byStatus,k=>STATUS_LBL[k]||k);chips('fSent','sent',D.bySent);renderTPeriod();
 function toggleF(key,val){F[key]=F[key]===val?null:val;renderExp();updateFilterSummary();}
-function goExplore(name){goTab(3,document.querySelector('[data-t="3"]'));F={detail:name,topic:null,status:null,sent:null,q:"",period:'all'};document.getElementById('srch').value="";renderTPeriod();renderExp();updateFilterSummary();collapseFilters();}
-function resetAll(){F={detail:null,topic:null,status:null,sent:null,q:"",period:'all'};document.getElementById('srch').value="";renderTPeriod();renderExp();updateFilterSummary();const el=document.getElementById('expFilters');if(el)el.classList.remove('collapsed');const btn=document.getElementById('filterToggle');if(btn)btn.textContent='필터 접기 ▴';}
+function goExplore(name){goTab(3,document.querySelector('[data-t="3"]'));F={detail:name,topic:null,status:null,sent:null,q:"",period:'all',dateFrom:null,dateTo:null};document.getElementById('srch').value="";const ef=document.getElementById('expFrom'),et=document.getElementById('expTo');if(ef)ef.value='';if(et)et.value='';renderTPeriod();renderExp();updateFilterSummary();collapseFilters();}
+function resetAll(){F={detail:null,topic:null,status:null,sent:null,q:"",period:'all',dateFrom:null,dateTo:null};document.getElementById('srch').value="";const ef=document.getElementById('expFrom'),et=document.getElementById('expTo');if(ef)ef.value='';if(et)et.value='';renderTPeriod();renderExp();updateFilterSummary();const el=document.getElementById('expFilters');if(el)el.classList.remove('collapsed');const btn=document.getElementById('filterToggle');if(btn)btn.textContent='필터 접기 ▴';}
 document.getElementById('srch').addEventListener('input',e=>{F.q=e.target.value;renderExp();updateFilterSummary();});
 function isMobile(){return window.innerWidth<=680;}
 function toggleFilters(){const el=document.getElementById('expFilters');const btn=document.getElementById('filterToggle');if(isMobile()){if(el.classList.contains('expanded')){el.classList.remove('expanded');btn.textContent='필터 열기 ▾';}else{el.classList.add('expanded');btn.textContent='닫기 ✕';}}else{if(el.classList.contains('collapsed')){el.classList.remove('collapsed');btn.textContent='필터 접기 ▴';}else{el.classList.add('collapsed');btn.textContent='필터 펼치기 ▾';}}}
 function collapseFilters(){const el=document.getElementById('expFilters');const btn=document.getElementById('filterToggle');if(isMobile()){el.classList.remove('expanded');btn.textContent='필터 열기 ▾';}else{el.classList.add('collapsed');btn.textContent='필터 펼치기 ▾';}}
-function updateFilterSummary(){const sm=document.getElementById('filterSummary');if(!sm)return;let tags=[];if(F.detail)tags.push({k:'detail',l:F.detail});if(F.topic)tags.push({k:'topic',l:F.topic});if(F.status)tags.push({k:'status',l:STATUS_LBL[F.status]||F.status});if(F.sent)tags.push({k:'sent',l:F.sent});if(F.q)tags.push({k:'q',l:'"'+F.q+'"'});if(F.period&&F.period!=='all'){const p=TPERIODS.find(x=>x.k===F.period);if(p)tags.push({k:'period',l:p.l});}if(tags.length){sm.style.display='flex';sm.innerHTML='<span class="fs-label">활성 필터</span>'+tags.map(t=>'<span class="fs-tag" onclick="clearOneFilter(\''+t.k+'\')">'+t.l+' ✕</span>').join('');}else{sm.style.display='none';sm.innerHTML='';}}
+function updateFilterSummary(){const sm=document.getElementById('filterSummary');if(!sm)return;let tags=[];if(F.detail)tags.push({k:'detail',l:F.detail});if(F.topic)tags.push({k:'topic',l:F.topic});if(F.status)tags.push({k:'status',l:STATUS_LBL[F.status]||F.status});if(F.sent)tags.push({k:'sent',l:F.sent});if(F.q)tags.push({k:'q',l:'"'+F.q+'"'});if(F.period&&F.period!=='all'){if(F.period==='custom'&&F.dateFrom&&F.dateTo){tags.push({k:'period',l:F.dateFrom+'~'+F.dateTo});}else{const p=TPERIODS.find(x=>x.k===F.period);if(p)tags.push({k:'period',l:p.l});}}if(tags.length){sm.style.display='flex';sm.innerHTML='<span class="fs-label">활성 필터</span>'+tags.map(t=>'<span class="fs-tag" onclick="clearOneFilter(\''+t.k+'\')">'+t.l+' ✕</span>').join('');}else{sm.style.display='none';sm.innerHTML='';}}
 function clearOneFilter(k){if(k==='q'){F.q='';document.getElementById('srch').value='';}else if(k==='period'){F.period='all';renderTPeriod();}else{F[k]=null;}renderExp();updateFilterSummary();}
 const sentClass=s=>s==="긍정"?"b-pos":s==="부정"?"b-neg":"b-neu";
 function expFiltered(){return D.tickets.filter(t=>{if(!inPeriod(t.date))return false;if(F.detail&&t.detail!==F.detail)return false;if(F.topic&&t.topic!==F.topic)return false;if(F.status&&t.status!==F.status)return false;if(F.sent&&t.sent!==F.sent)return false;if(F.q&&!(t.text||"").toLowerCase().includes(F.q.toLowerCase()))return false;return true;});}
 function renderExp(){
  ['fDetail','fTopic','fStatus','fSent'].forEach(id=>document.querySelectorAll('#'+id+' .chip').forEach(c=>c.classList.toggle('on',F[c.dataset.key]===c.dataset.k)));
+ const _pf=D.tickets.filter(t=>inPeriod(t.date));const _pc={fDetail:{},fTopic:{},fStatus:{},fSent:{}};_pf.forEach(t=>{_pc.fDetail[t.detail]=(_pc.fDetail[t.detail]||0)+1;_pc.fTopic[t.topic]=(_pc.fTopic[t.topic]||0)+1;_pc.fStatus[t.status]=(_pc.fStatus[t.status]||0)+1;_pc.fSent[t.sent]=(_pc.fSent[t.sent]||0)+1;});
+ ['fDetail','fTopic','fStatus','fSent'].forEach(id=>document.querySelectorAll('#'+id+' .chip .c').forEach(c=>{const k=c.parentElement.dataset.k;if(k)c.textContent=_pc[id][k]||0;}));
  const rows=expFiltered();
  const r=F.detail?D.reasons.find(x=>x.name===F.detail):null;
  document.getElementById('aisum').innerHTML=r?`<div class="aisum"><div class="h">🔍 AI 요약 · ${esc(r.name)} ${rows.length}건</div>${esc(r.rc)} <em>권장: ${esc(r.action)}</em></div>`:'';
@@ -969,6 +981,7 @@ function renderExp(){
  if(!rows.length){el.innerHTML='<div class="empty">조건에 맞는 티켓이 없습니다.</div>';return;}
  el.innerHTML=rows.map(t=>`<div class="tk"><div><div class="tk-topic"><span class="tk-dot" style="background:${TC[t.topic]}"></span>${t.topic}</div><div class="tk-detail">${t.detail}</div><div class="tk-cat">의도: ${t.cat}</div></div><div><div class="tk-text">${esc(mask(t.text||'—'))}</div><div class="tk-id">#${t.id} · ${t.date}</div></div><div class="tk-meta"><span class="badge b-${t.status}">${STATUS_LBL[t.status]||t.status}</span><span class="badge ${sentClass(t.sent)}">${t.sent}</span><a href="https://sicorphelp.zendesk.com/agent/tickets/${t.id}" target="_blank" rel="noopener noreferrer" title="Zendesk 티켓 열기" style="font-size:9.5px;font-weight:700;color:var(--brand);text-decoration:none;border:1px solid #BFDBFE;border-radius:5px;padding:1px 5px">Zendesk ↗</a></div></div>`).join('');
 }
+function applyExpRange(){const f=document.getElementById('expFrom').value,t=document.getElementById('expTo').value;if(!f||!t){toast('시작일과 종료일을 모두 입력하세요');return;}F.period='custom';F.dateFrom=f;F.dateTo=t;renderTPeriod();renderExp();updateFilterSummary();}
 /* 🤖 AI 운영 분석 메모 (D.ai 있을 때만 렌더, 없으면 규칙 기반 진단으로 폴백) */
 function renderAI(){
  const el=document.getElementById('aimemo');if(!el)return;
@@ -1000,8 +1013,9 @@ function renderSlope(){
 }
 
 /* inline onclick 핸들러용 전역 노출 (boot 지역함수 → window) */
-window.isMobile=isMobile;window.goTab=goTab;window.selectReason=selectReason;window.copyMacro=copyMacro;window.goExplore=goExplore;window.toggleF=toggleF;window.setTPeriod=setTPeriod;window.toggleLine=toggleLine;window.setAllLines=setAllLines;window.setPeriod=setPeriod;window.resetAll=resetAll;window.searchKw=searchKw;window.toggleFilters=toggleFilters;window.clearOneFilter=clearOneFilter;Object.defineProperty(window,'F',{get:()=>F,set:v=>{F=v},configurable:true});
+window.isMobile=isMobile;window.goTab=goTab;window.selectReason=selectReason;window.copyMacro=copyMacro;window.goExplore=goExplore;window.toggleF=toggleF;window.setTPeriod=setTPeriod;window.toggleLine=toggleLine;window.setAllLines=setAllLines;window.setPeriod=setPeriod;window.resetAll=resetAll;window.searchKw=searchKw;window.applyOvRange=applyOvRange;window.resetOvRange=resetOvRange;window.applyExpRange=applyExpRange;window.toggleFilters=toggleFilters;window.clearOneFilter=clearOneFilter;Object.defineProperty(window,'F',{get:()=>F,set:v=>{F=v},configurable:true});
 /* Object.freeze applied in _fetchData */renderExec();renderTrend();renderBrief();renderHealth();renderCatSummary();renderTree();renderList();renderDetail();renderAutomation();renderSentiment();renderKeywords();renderTrackSummary();renderPeriodChips();renderLineLeg();renderLineChart();renderWhy();renderExp();renderAI();renderSlope();
+(function(){const wks=Object.values(WEEK_DATES).sort();if(wks.length){const mn=wks[0],mx=wks[wks.length-1];['ovFrom','ovTo','expFrom','expTo'].forEach(id=>{const el=document.getElementById(id);if(el){el.min=mn;el.max=mx;}});}})();
 }
 </script>
 </body>
