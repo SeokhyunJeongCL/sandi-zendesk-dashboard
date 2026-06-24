@@ -469,9 +469,18 @@ h3.blk{font-size:12.5px;font-weight:700;margin-bottom:12px}
     </div>
     <div id="step2" style="display:none">
       <div style="font-size:12px;color:#64748B;margin-bottom:12px;line-height:1.5" id="pin-msg"></div>
+      <div id="pin-timer" style="display:none;text-align:center;margin-bottom:12px">
+        <span style="display:inline-flex;align-items:center;gap:6px;background:#FDF2F9;border:1px solid #F5C2E7;border-radius:8px;padding:6px 14px;font-size:13px;color:#BE185D;font-weight:600">
+          <span style="font-size:15px">⏱</span> 남은 시간 <span id="timer-display" style="font-family:monospace;font-size:15px;min-width:40px">05:00</span>
+        </span>
+      </div>
+      <div id="pin-expired" style="display:none;text-align:center;margin-bottom:12px">
+        <span style="display:inline-block;background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:8px 14px;font-size:13px;color:#DC2626;font-weight:600">인증번호가 만료되었습니다. 다시 요청해 주세요.</span>
+      </div>
       <label class="auth-label" for="pin">인증번호 (6자리)</label>
       <input type="text" class="auth-input" id="pin" maxlength="6" pattern="[0-9]*" inputmode="numeric" placeholder="000000" autocomplete="one-time-code" onkeydown="if(event.key==='Enter')verifyPin()" style="letter-spacing:8px;text-align:center;font-size:20px;font-weight:700">
-      <button class="auth-btn" onclick="verifyPin()">로그인</button>
+      <button class="auth-btn" id="btn-verify" onclick="verifyPin()">로그인</button>
+      <button class="auth-btn" id="btn-resend" onclick="resendPin()" style="display:none;background:#EA27C2;margin-top:8px">인증번호 재요청</button>
       <button class="auth-btn" onclick="backToStep1()" style="background:#fff;color:#64748B;border:1px solid #CBD5E1;margin-top:8px">다른 이메일로 요청</button>
     </div>
     <div class="auth-err" id="pw-err"></div>
@@ -605,6 +614,61 @@ function _showApp(){
 let _failCount = 0;
 let _lockUntil = 0;
 let _otpEmail = '';
+let _pinTimer = null;
+let _pinExpiry = 0;
+const PIN_TTL = 300; // 5분 = 300초
+
+function _startPinTimer(){
+  _pinExpiry = Date.now() + PIN_TTL * 1000;
+  document.getElementById('pin-timer').style.display='block';
+  document.getElementById('pin-expired').style.display='none';
+  document.getElementById('btn-verify').style.display='block';
+  document.getElementById('btn-resend').style.display='none';
+  document.getElementById('pin').disabled=false;
+  if(_pinTimer) clearInterval(_pinTimer);
+  _pinTimer = setInterval(function(){
+    const left = Math.max(0, Math.ceil((_pinExpiry - Date.now())/1000));
+    const m = String(Math.floor(left/60)).padStart(2,'0');
+    const s = String(left%60).padStart(2,'0');
+    document.getElementById('timer-display').textContent = m+':'+s;
+    if(left <= 60){
+      document.getElementById('timer-display').style.color='#DC2626';
+    }
+    if(left <= 0){
+      clearInterval(_pinTimer); _pinTimer=null;
+      document.getElementById('pin-timer').style.display='none';
+      document.getElementById('pin-expired').style.display='block';
+      document.getElementById('btn-verify').style.display='none';
+      document.getElementById('btn-resend').style.display='block';
+      document.getElementById('pin').disabled=true;
+    }
+  }, 1000);
+}
+
+function _stopPinTimer(){
+  if(_pinTimer){ clearInterval(_pinTimer); _pinTimer=null; }
+  document.getElementById('pin-timer').style.display='none';
+  document.getElementById('pin-expired').style.display='none';
+}
+
+async function resendPin(){
+  document.getElementById('pw-err').textContent='인증번호 재발송 중...';
+  try{
+    const res = await fetch(SB_URL+"/auth/v1/otp", {
+      method:"POST",
+      headers:{"apikey":SB_KEY,"Content-Type":"application/json"},
+      body:JSON.stringify({email:_otpEmail})
+    });
+    if(!res.ok) throw new Error('발송 실패');
+    document.getElementById('pw-err').textContent='';
+    document.getElementById('pin').value='';
+    document.getElementById('pin').disabled=false;
+    document.getElementById('pin').focus();
+    _startPinTimer();
+  }catch(e){
+    document.getElementById('pw-err').textContent=e.message;
+  }
+}
 
 async function _fetchData(){
   const STATS_URL = SB_URL+"/storage/v1/object/sign/dashboard-data/stats_cache.json?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84NDQ0ZTViZC1kYjY5LTRkNGItYmQzNy0xMTUxYmRhZWMwZjgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJkYXNoYm9hcmQtZGF0YS9zdGF0c19jYWNoZS5qc29uIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4MjI3ODExOSwiZXhwIjoxODEzODE0MTE5fQ.OHr18ZdPPzsJT8KLiDhvLKmuIU12TPmJUcpTRNy2SKI";
@@ -654,6 +718,7 @@ async function requestPin(){
     document.getElementById('pw-err').textContent='';
     document.getElementById('pin').value='';
     document.getElementById('pin').focus();
+    _startPinTimer();
   }catch(e){
     _failCount++;
     if(_failCount >= 10){
@@ -671,6 +736,10 @@ async function verifyPin(){
   if(now < _lockUntil){
     const sec = Math.ceil((_lockUntil - now)/1000);
     document.getElementById('pw-err').textContent = sec+'\uCD08 \uD6C4\uC5D0 \uB2E4\uC2DC \uC2DC\uB3C4\uD574\uC8FC\uC138\uC694.';
+    return;
+  }
+  if(_pinExpiry && now > _pinExpiry){
+    document.getElementById('pw-err').textContent='\uC778\uC99D\uBC88\uD638\uAC00 \uB9CC\uB8CC\uB418\uC5C8\uC2B5\uB2C8\uB2E4. \uC7AC\uC694\uCCAD\uD574\uC8FC\uC138\uC694.';
     return;
   }
   const pin = document.getElementById('pin').value.trim();
@@ -691,6 +760,7 @@ async function verifyPin(){
     }
     const data = await res.json();
     const token = data.access_token;
+    _stopPinTimer();
     await _fetchData();
     sessionStorage.setItem(AUTH_KEY, token);
     sessionStorage.setItem(AUTH_EXP, String(Date.now() + SESSION_MS));
@@ -712,6 +782,7 @@ async function verifyPin(){
 }
 
 function backToStep1(){
+  _stopPinTimer();
   document.getElementById('step2').style.display='none';
   document.getElementById('step1').style.display='block';
   document.getElementById('pw-err').textContent='';
