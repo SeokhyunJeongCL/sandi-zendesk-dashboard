@@ -969,7 +969,8 @@ const sentClass=s=>s==="긍정"?"b-pos":s==="부정"?"b-neg":"b-neu";
 function expFiltered(){return D.tickets.filter(t=>{if(!inPeriod(t.date))return false;if(F.detail&&t.detail!==F.detail)return false;if(F.topic&&t.topic!==F.topic)return false;if(F.status&&t.status!==F.status)return false;if(F.sent&&t.sent!==F.sent)return false;if(F.q&&!(t.text||"").toLowerCase().includes(F.q.toLowerCase()))return false;return true;});}
 function renderExp(){
  ['fDetail','fTopic','fStatus','fSent'].forEach(id=>document.querySelectorAll('#'+id+' .chip').forEach(c=>c.classList.toggle('on',F[c.dataset.key]===c.dataset.k)));
- const _pf=D.tickets.filter(t=>inPeriod(t.date));const _pc={fDetail:{},fTopic:{},fStatus:{},fSent:{}};_pf.forEach(t=>{_pc.fDetail[t.detail]=(_pc.fDetail[t.detail]||0)+1;_pc.fTopic[t.topic]=(_pc.fTopic[t.topic]||0)+1;_pc.fStatus[t.status]=(_pc.fStatus[t.status]||0)+1;_pc.fSent[t.sent]=(_pc.fSent[t.sent]||0)+1;});
+ const _cf=k=>D.tickets.filter(t=>{if(!inPeriod(t.date))return false;if(k!=='detail'&&F.detail&&t.detail!==F.detail)return false;if(k!=='topic'&&F.topic&&t.topic!==F.topic)return false;if(k!=='status'&&F.status&&t.status!==F.status)return false;if(k!=='sent'&&F.sent&&t.sent!==F.sent)return false;if(F.q&&!(t.text||'').toLowerCase().includes(F.q.toLowerCase()))return false;return true;});
+ const _pc={fDetail:{},fTopic:{},fStatus:{},fSent:{}};_cf('detail').forEach(t=>{_pc.fDetail[t.detail]=(_pc.fDetail[t.detail]||0)+1;});_cf('topic').forEach(t=>{_pc.fTopic[t.topic]=(_pc.fTopic[t.topic]||0)+1;});_cf('status').forEach(t=>{_pc.fStatus[t.status]=(_pc.fStatus[t.status]||0)+1;});_cf('sent').forEach(t=>{_pc.fSent[t.sent]=(_pc.fSent[t.sent]||0)+1;});
  ['fDetail','fTopic','fStatus','fSent'].forEach(id=>document.querySelectorAll('#'+id+' .chip .c').forEach(c=>{const k=c.parentElement.dataset.k;if(k)c.textContent=_pc[id][k]||0;}));
  const rows=expFiltered();
  const r=F.detail?D.reasons.find(x=>x.name===F.detail):null;
