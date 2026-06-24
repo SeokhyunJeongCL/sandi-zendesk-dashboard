@@ -598,7 +598,8 @@ let _lockUntil = 0;
 async function _fetchData(){
   const STATS_URL = SB_URL+"/storage/v1/object/sign/dashboard-data/stats_cache.json?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84NDQ0ZTViZC1kYjY5LTRkNGItYmQzNy0xMTUxYmRhZWMwZjgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJkYXNoYm9hcmQtZGF0YS9zdGF0c19jYWNoZS5qc29uIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4MjI3ODExOSwiZXhwIjoxODEzODE0MTE5fQ.OHr18ZdPPzsJT8KLiDhvLKmuIU12TPmJUcpTRNy2SKI";
   const AI_URL = SB_URL+"/storage/v1/object/sign/dashboard-data/ai_analysis.json?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84NDQ0ZTViZC1kYjY5LTRkNGItYmQzNy0xMTUxYmRhZWMwZjgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJkYXNoYm9hcmQtZGF0YS9haV9hbmFseXNpcy5qc29uIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4MjI3ODExOSwiZXhwIjoxODEzODE0MTE5fQ.y0Xsu-0rTKbpMX5MUL1P23IqqDfRWKg-A3MQ-1zDZ3c";
-  const [statsRes, aiRes] = await Promise.all([fetch(STATS_URL), fetch(AI_URL)]);
+  const opts = {cache:'no-store'};
+  const [statsRes, aiRes] = await Promise.all([fetch(STATS_URL,opts), fetch(AI_URL,opts)]);
   if(!statsRes.ok) throw new Error("data fetch failed: "+statsRes.status);
   const statsData = await statsRes.json();
   const aiData    = await aiRes.json().catch(()=>null);
