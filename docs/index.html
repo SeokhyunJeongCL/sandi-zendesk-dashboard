@@ -249,6 +249,48 @@ h3.blk{font-size:12.5px;font-weight:700;margin-bottom:12px}
 .auth-btn{width:100%;height:52px;margin-top:18px;background:#132029;border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;transition:filter .15s}
 .auth-btn:hover{filter:brightness(1.12)}
 .auth-err{min-height:16px;font-size:11px;color:#F03E3E;margin-top:11px;text-align:center}
+
+/* -- CS Summary tab -- */
+.sum-hero{background:linear-gradient(135deg,#1E2D38,#132029);border-radius:14px;padding:22px 24px;color:#fff;margin-bottom:18px;box-shadow:var(--sh2)}
+.sum-lead{font-size:10.5px;color:#9AA7B0;font-weight:600;letter-spacing:.4px;margin-bottom:8px}
+.sum-title{font-size:20px;font-weight:800;line-height:1.4;letter-spacing:-.4px}
+.sum-title em{color:#8CE99A;font-style:normal}.sum-title .b{color:#F5A3E4}
+.sum-kpis{display:flex;gap:28px;margin-top:16px;flex-wrap:wrap}
+.sum-kpi .n{font-size:26px;font-weight:800;letter-spacing:-.5px}.sum-kpi .l{font-size:10px;color:#9AA7B0;margin-top:2px}
+.sum-foot{margin-top:14px;font-size:10px;color:#8896A0;border-top:1px solid #243440;padding-top:10px}
+.sum-g2{display:grid;grid-template-columns:1.2fr 1fr;gap:14px;margin-bottom:16px}
+@media(max-width:820px){.sum-g2{grid-template-columns:1fr}}
+.sum-tbl{width:100%;border-collapse:collapse;font-size:11.5px}
+.sum-tbl th{text-align:left;font-size:10px;font-weight:600;color:var(--sub);padding:8px 10px;background:#F8FAFC;border-bottom:1px solid var(--border);white-space:nowrap}
+.sum-tbl td{padding:9px 10px;border-bottom:1px solid var(--border-s);vertical-align:middle}
+.sum-tbl tr:hover{background:var(--surface)}
+.sum-bar-wrap{flex:1;height:8px;background:#F1F5F9;border-radius:4px;overflow:hidden;min-width:40px}
+.sum-bar{height:100%;border-radius:4px}
+.sum-pct{font-size:10.5px;font-weight:700;color:var(--sub);width:42px;text-align:right;flex-shrink:0}
+.sum-cnt{font-size:13px;font-weight:800;width:34px;text-align:right;flex-shrink:0}
+.sum-pri{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+@media(max-width:680px){.sum-pri{grid-template-columns:1fr}}
+.sum-pri-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:15px 17px;box-shadow:var(--sh);position:relative;overflow:hidden}
+.sum-pri-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px}
+.sum-pri-card.p1::before{background:#F03E3E}.sum-pri-card.p2::before{background:#E67700}.sum-pri-card.p3::before{background:#1C7ED6}.sum-pri-card.p4::before{background:#8E8E8E}
+.sum-pri-rank{font-size:10px;font-weight:800;color:#fff;border-radius:6px;padding:2px 8px;display:inline-block;margin-bottom:8px}
+.sum-pri-card.p1 .sum-pri-rank{background:#F03E3E}.sum-pri-card.p2 .sum-pri-rank{background:#E67700}.sum-pri-card.p3 .sum-pri-rank{background:#1C7ED6}.sum-pri-card.p4 .sum-pri-rank{background:#8E8E8E}
+.sum-pri-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.sum-pri-desc{font-size:11px;color:var(--sub);line-height:1.5}
+.sum-pri-impact{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:var(--accent);background:#FDE9F8;border-radius:100px;padding:3px 10px;margin-top:8px}
+.sum-donut{display:flex;align-items:center;gap:18px;padding:10px 0}
+.sum-donut-leg{flex:1}
+.sum-donut-row{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:11.5px}
+.sum-donut-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sum-donut-lbl{flex:1;font-weight:600}
+.sum-donut-n{font-weight:800;width:28px;text-align:right;flex-shrink:0}
+.sum-donut-pct{font-size:10px;color:var(--sub);width:36px;text-align:right;flex-shrink:0}
+.sum-insight{background:#132029;border-radius:12px;padding:16px 18px;color:#fff;margin-bottom:16px}
+.sum-insight .h{font-size:10.5px;font-weight:700;color:#F5A3E4;margin-bottom:8px}
+.sum-insight ul{margin:0;padding-left:16px;font-size:12px;line-height:1.7;color:#E2E8F0}
+.sum-insight li{margin-bottom:3px}
+.sum-insight em{color:#8CE99A;font-style:normal}
+
 </style>
 </head>
 <body>
@@ -274,6 +316,7 @@ h3.blk{font-size:12.5px;font-weight:700;margin-bottom:12px}
   <button class="tab" data-t="1" onclick="goTab(1,this)" title="어떤 문제가 사용자에게 있나">🩺 진단</button>
   <button class="tab" data-t="2" onclick="goTab(2,this)" title="주제별 인입이 시간에 따라 어떻게 변하나">📉 추적</button>
   <button class="tab" data-t="3" onclick="goTab(3,this)" title="실제 어떤 티켓에서 어떤 문의가 있었나">🔎 티켓</button>
+  <button class="tab" data-t="4" onclick="goTab(4,this)" title="CS 인입 구조와 제품 개선 우선순위 요약">📑 요약</button>
 </div></div>
 
 <div class="wrap">
@@ -364,6 +407,12 @@ h3.blk{font-size:12.5px;font-weight:700;margin-bottom:12px}
   <div class="note">* 전화·이메일·이름 자동 마스킹된 고객 메시지.</div>
 </div>
 </div>
+
+<!-- ===== CS 요약 ===== -->
+<div class="panel" id="p3">
+  <div id="cs-summary"></div>
+</div>
+
 <div id="toast" class="toast"></div>
 <div class="foot" id="foot"></div>
 </div>
@@ -758,8 +807,136 @@ function renderSlope(){
 }
 
 /* inline onclick 핸들러용 전역 노출 (boot 지역함수 → window) */
+
+/* ===== CS Summary tab render ===== */
+function renderSummary(){
+  var el=document.getElementById('cs-summary');if(!el)return;
+  var TC2=Object.assign({},TC);
+  var topicMap={};
+  D.reasons.forEach(function(r){
+    if(!topicMap[r.topic]) topicMap[r.topic]={topic:r.topic,total:0,recent:0,prior:0,neg:0,reasons:[]};
+    topicMap[r.topic].total+=r.total;
+    topicMap[r.topic].recent+=r.recent;
+    topicMap[r.topic].prior+=r.prior;
+    topicMap[r.topic].neg+=(r.neg||0);
+    topicMap[r.topic].reasons.push(r);
+  });
+  var topics=Object.values(topicMap).sort(function(a,b){return b.total-a.total});
+  var maxTopic=topics.length?topics[0].total:1;
+  var stTotal=(D.byStatus.open||0)+(D.byStatus.pending||0)+(D.byStatus.solved||0)+(D.byStatus.closed||0);
+  var unresolvedPct=stTotal?Math.round(((D.byStatus.open||0)+(D.byStatus.pending||0))/stTotal*100):0;
+  var sentTotal=(D.bySent['\uae0d\uc815']||0)+(D.bySent['\uc911\ub9bd']||0)+(D.bySent['\ubd80\uc815']||0);
+  var topReasons=D.reasons.slice().sort(function(a,b){return b.total-a.total}).slice(0,10);
+  var maxR=topReasons.length?topReasons[0].total:1;
+  var aiData=window.AI_DATA||{};
+  var improvements=aiData.improvements||[];
+  var onbTopics=['\ub85c\uadf8\uc778/\uc778\uc99d','\uacc4\uc815/\uc124\uc815'];
+  var onbTotal=topics.filter(function(t){return onbTopics.indexOf(t.topic)>=0}).reduce(function(s,t){return s+t.total},0);
+  var onbPct=D.total?Math.round(onbTotal/D.total*100):0;
+
+  var h='<div class="sum-hero">';
+  h+='<div class="sum-lead">CS \uc778\uc785 \uad6c\uc870 \uc694\uc57d \xb7 '+D.period+'</div>';
+  h+='<div class="sum-title">\ucd1d <span class="b">'+D.total+'\uac74</span> \ubb38\uc758 \uc911 \ubbf8\ud574\uacb0 <em>'+unresolvedPct+'%</em> \xb7 \uc628\ubcf4\ub529 \ucc28\ub2e8 <em>'+onbPct+'%</em></div>';
+  h+='<div class="sum-kpis">';
+  h+='<div class="sum-kpi"><div class="n" style="color:#F5A3E4">'+D.total+'</div><div class="l">\ucd1d \ud2f0\ucf13</div></div>';
+  h+='<div class="sum-kpi"><div class="n" style="color:#8CE99A">'+D.recent4+'</div><div class="l">\ucd5c\uadfc 4\uc8fc</div></div>';
+  h+='<div class="sum-kpi"><div class="n" style="color:#FDE68A">'+topics.length+'</div><div class="l">\uc8fc\uc81c \ubd84\ub958</div></div>';
+  h+='<div class="sum-kpi"><div class="n" style="color:#93C5FD">'+D.reasons.length+'</div><div class="l">\uc138\ubd80 \uc0ac\uc720</div></div>';
+  h+='</div>';
+  h+='<div class="sum-foot">\uc9c1\uc804 4\uc8fc '+D.prior4+'\uac74 \u2192 \ucd5c\uadfc 4\uc8fc '+D.recent4+'\uac74 ('+(D.recent4>=D.prior4?'+':'')+String(D.recent4-D.prior4)+') \xb7 \ubbf8\ud574\uacb0 = open '+(D.byStatus.open||0)+' + pending '+(D.byStatus.pending||0)+'</div>';
+  h+='</div>';
+
+  h+='<div class="sec-h">\uc8fc\uc81c(Topic)\ubcc4 \uc778\uc785 \uad6c\uc870 <span class="sec-tag">\uc804\uccb4 \uae30\uac04</span><span style="margin-left:auto;font-size:10.5px;color:var(--muted);font-weight:600">\uac74\uc218 \xb7 \ube44\uc728 \xb7 \ucd5c\uadfc \uc99d\uac10</span></div>';
+  h+='<div class="sec-sub">\uac00\uc7a5 \ud070 \ube44\uc911\uc758 \uc8fc\uc81c\uac00 \uc6b4\uc601 \ubd80\ud558\uc758 \ud575\uc2ec. \ucd5c\uadfc 4\uc8fc \uc99d\uac10(\u25b2\u25bc)\uc740 \uac1c\uc120/\uc545\ud654 \uc2e0\ud638.</div>';
+  h+='<div class="sum-g2">';
+  h+='<div class="card" style="padding:0;overflow:hidden"><table class="sum-tbl"><thead><tr><th>\uc8fc\uc81c</th><th>\uac74\uc218</th><th style="width:40%">\ube44\uc728</th><th>\ucd5c\uadfc4\uc8fc</th><th>\uc99d\uac10</th></tr></thead><tbody>';
+  topics.forEach(function(t){
+    var pct=D.total?Math.round(t.total/D.total*100):0;
+    var delta=t.recent-t.prior;
+    var dc=delta>0?'var(--red)':(delta<0?'var(--green)':'var(--muted)');
+    var ds=delta>0?'\u25b2':(delta<0?'\u25bc':'\u2013');
+    h+='<tr><td><span style="display:inline-flex;align-items:center;gap:6px"><span class="sum-donut-dot" style="background:'+(TC2[t.topic]||'#8E8E8E')+'"></span><b>'+t.topic+'</b></span></td>';
+    h+='<td class="tnum"><b>'+t.total+'</b></td>';
+    h+='<td><div style="display:flex;align-items:center;gap:8px"><div class="sum-bar-wrap"><div class="sum-bar" style="width:'+(t.total/maxTopic*100)+'%;background:'+(TC2[t.topic]||'#8E8E8E')+'"></div></div><span class="sum-pct">'+pct+'%</span></div></td>';
+    h+='<td class="tnum">'+t.recent+'</td>';
+    h+='<td style="color:'+dc+';font-weight:700;font-size:12px">'+ds+Math.abs(delta)+'</td></tr>';
+  });
+  h+='</tbody></table></div>';
+
+  var stColors={open:'#F03E3E',pending:'#E67700',solved:'#2B8A3E',closed:'#6B7A85'};
+  var stLabels={open:'\ubbf8\ud574\uacb0(Open)',pending:'\ub300\uae30(Pending)',solved:'\ud574\uacb0(Solved)',closed:'\uc885\ub8cc(Closed)'};
+  var snColors={'\uae0d\uc815':'#2B8A3E','\uc911\ub9bd':'#6B7A85','\ubd80\uc815':'#F03E3E'};
+  h+='<div style="display:flex;flex-direction:column;gap:14px">';
+  h+='<div class="card" style="padding:14px 16px"><div class="ai-h">\ud83d\udcca \uc0c1\ud0dc \ubd84\ud3ec</div><div class="sum-donut"><div class="sum-donut-leg">';
+  ['open','pending','solved','closed'].forEach(function(k){
+    var v=D.byStatus[k]||0;
+    var p=stTotal?Math.round(v/stTotal*100):0;
+    h+='<div class="sum-donut-row"><span class="sum-donut-dot" style="background:'+stColors[k]+'"></span><span class="sum-donut-lbl">'+stLabels[k]+'</span><span class="sum-donut-n tnum">'+v+'</span><span class="sum-donut-pct">'+p+'%</span></div>';
+  });
+  h+='</div></div></div>';
+  h+='<div class="card" style="padding:14px 16px"><div class="ai-h">\ud83d\udcac \uac10\uc131 \ubd84\ud3ec</div><div class="sum-donut"><div class="sum-donut-leg">';
+  ['\uae0d\uc815','\uc911\ub9bd','\ubd80\uc815'].forEach(function(k){
+    var v=D.bySent[k]||0;
+    var p=sentTotal?Math.round(v/sentTotal*100):0;
+    h+='<div class="sum-donut-row"><span class="sum-donut-dot" style="background:'+snColors[k]+'"></span><span class="sum-donut-lbl">'+k+'</span><span class="sum-donut-n tnum">'+v+'</span><span class="sum-donut-pct">'+p+'%</span></div>';
+  });
+  h+='</div></div></div>';
+  h+='</div></div>';
+
+  h+='<div class="sec-h" style="margin-top:18px">\uc138\ubd80\uc0ac\uc720 Top 10 <span class="sec-tag">\uc804\uccb4 \uae30\uac04</span><span style="margin-left:auto;font-size:10.5px;color:var(--muted);font-weight:600">\uc0ac\uc720\uba85 \xb7 \uc18c\uc18d \uc8fc\uc81c \xb7 \uac74\uc218</span></div>';
+  h+='<div class="sec-sub">\uac00\uc7a5 \ub9ce\uc740 \uc0ac\uc720 \uc0c1\uc704 10\uac1c. \ud074\ub9ad\ud558\uba74 \uc9c4\ub2e8 \ud0ed\uc758 \uc0c1\uc138 \ud654\uba74\uc73c\ub85c \uc774\ub3d9\ud569\ub2c8\ub2e4.</div>';
+  h+='<div class="card" style="padding:0;overflow:hidden;margin-bottom:18px"><table class="sum-tbl"><thead><tr><th style="width:28px">#</th><th>\uc0ac\uc720</th><th>\uc8fc\uc81c</th><th>\ub204\uc801</th><th style="width:30%">\ube44\uc728</th><th>\ucd5c\uadfc</th><th>\uc9c1\uc804</th><th>\uc99d\uac10</th></tr></thead><tbody>';
+  topReasons.forEach(function(r,i){
+    var pct=D.total?Math.round(r.total/D.total*100):0;
+    var delta=r.recent-r.prior;
+    var dc=delta>0?'var(--red)':(delta<0?'var(--green)':'var(--muted)');
+    var ds=delta>0?'\u25b2':(delta<0?'\u25bc':'\u2013');
+    h+='<tr style="cursor:pointer" onclick="goTab(1);setTimeout(function(){selectReason('+i+')},100)">';
+    h+='<td style="font-weight:800;color:var(--muted)">'+(i+1)+'</td>';
+    h+='<td><b>'+r.name+'</b></td>';
+    h+='<td><span style="display:inline-flex;align-items:center;gap:5px"><span class="sum-donut-dot" style="background:'+(TC2[r.topic]||'#8E8E8E')+'"></span>'+r.topic+'</span></td>';
+    h+='<td class="tnum"><b>'+r.total+'</b></td>';
+    h+='<td><div style="display:flex;align-items:center;gap:8px"><div class="sum-bar-wrap"><div class="sum-bar" style="width:'+(r.total/maxR*100)+'%;background:'+(TC2[r.topic]||'#8E8E8E')+'"></div></div><span class="sum-pct">'+pct+'%</span></div></td>';
+    h+='<td class="tnum">'+r.recent+'</td><td class="tnum">'+r.prior+'</td>';
+    h+='<td style="color:'+dc+';font-weight:700;font-size:12px">'+ds+Math.abs(delta)+'</td></tr>';
+  });
+  h+='</tbody></table></div>';
+
+  h+='<div class="sec-h" style="margin-top:18px">\uc885\ud569 \uc9c4\ub2e8 <span class="sec-tag">AI \ubd84\uc11d</span></div>';
+  h+='<div class="sec-sub">AI\uac00 \ub3c4\ucd9c\ud55c \ud575\uc2ec \uc9c4\ub2e8\uacfc \uc2e0\uaddc \uc2dc\uadf8\ub110. \uc6b4\uc601\uc790 \ud655\uc778 \ud544\uc694.</div>';
+  h+='<div class="sum-insight">';
+  h+='<div class="h">\ud83d\udca1 \ud575\uc2ec \uc9c4\ub2e8</div>';
+  h+='<p style="font-size:12.5px;line-height:1.6;margin-bottom:12px">'+(aiData.headline||'')+'</p>';
+  if(aiData.new_signals&&aiData.new_signals.length){
+    h+='<div class="h" style="margin-top:10px">\ud83d\udd0d \uc2e0\uaddc \uc2dc\uadf8\ub110</div><ul>';
+    aiData.new_signals.forEach(function(s){h+='<li>'+s+'</li>';});
+    h+='</ul>';
+  }
+  h+='</div>';
+
+  if(improvements.length){
+    h+='<div class="sec-h" style="margin-top:18px">\uc81c\ud488 \uac1c\uc120 \uc6b0\uc120\uc21c\uc704 <span class="sec-tag">WSJF \uae30\uc900</span><span style="margin-left:auto;font-size:10.5px;color:var(--muted);font-weight:600">\uc6b0\uc120\uc21c\uc704 \xb7 \uc601\ud5a5\ub3c4 \xb7 \uae34\uae09\ub3c4</span></div>';
+    h+='<div class="sec-sub">AI\uac00 \ud310\ub2e8\ud55c \uc81c\ud488 \uc218\uc900 \uac1c\uc120\uacfc\uc81c. \uc601\ud5a5 \uac74\uc218\uc640 \uae34\uae09\ub3c4 \uae30\ubc18 \uc815\ub82c.</div>';
+    h+='<div class="sum-pri">';
+    improvements.forEach(function(imp,i){
+      var pc=['p1','p2','p3','p4'][i]||'p4';
+      var urgMap={'\ub192\uc74c':'\ud83d\udd34 \ub192\uc74c','\uc911\uac04':'\ud83d\udfe1 \uc911\uac04','\ub0ae\uc74c':'\ud83d\udfe2 \ub0ae\uc74c'};
+      var urgLabel=urgMap[imp.priority]||imp.priority;
+      h+='<div class="sum-pri-card '+pc+'">';
+      h+='<div class="sum-pri-rank">'+(i+1)+'\uc21c\uc704 \xb7 '+urgLabel+'</div>';
+      h+='<div class="sum-pri-title">'+imp.title+'</div>';
+      h+='<div class="sum-pri-desc">'+imp.why+'</div>';
+      h+='</div>';
+    });
+    h+='</div>';
+  }
+
+  h+='<div class="note">\u203b \uc774 \uc694\uc57d\uc740 \ub300\uc2dc\ubcf4\ub4dc \ub370\uc774\ud130(D)\uc5d0\uc11c \uc2e4\uc2dc\uac04 \uacc4\uc0b0\ub429\ub2c8\ub2e4. \uc9c4\ub2e8 \ubb38\uad6c\ub294 AI \ucd94\uc815\uc73c\ub85c \uc6b4\uc601\uc790 \ud655\uc778\uc774 \ud544\uc694\ud569\ub2c8\ub2e4.</div>';
+  el.innerHTML=h;
+}
+
 window.goTab=goTab;window.selectReason=selectReason;window.copyMacro=copyMacro;window.goExplore=goExplore;window.toggleF=toggleF;window.setTPeriod=setTPeriod;window.toggleLine=toggleLine;window.setAllLines=setAllLines;window.setPeriod=setPeriod;window.resetAll=resetAll;window.searchKw=searchKw;window.applyOvRange=applyOvRange;window.resetOvRange=resetOvRange;window.applyExpRange=applyExpRange;Object.defineProperty(window,'F',{get:()=>F,set:v=>{F=v},configurable:true});
-renderExec();renderTrend();renderBrief();renderHealth();renderCatSummary();renderTree();renderList();renderDetail();renderAutomation();renderSentiment();renderKeywords();renderTrackSummary();renderPeriodChips();renderLineLeg();renderLineChart();renderWhy();renderExp();renderAI();renderSlope();
+renderExec();renderTrend();renderBrief();renderHealth();renderCatSummary();renderTree();renderList();renderDetail();renderAutomation();renderSentiment();renderKeywords();renderTrackSummary();renderPeriodChips();renderLineLeg();renderLineChart();renderWhy();renderExp();renderAI();renderSlope();renderSummary();
 (function(){const wks=Object.values(WEEK_DATES).sort();if(wks.length){const mn=wks[0],mx=wks[wks.length-1];['ovFrom','ovTo','expFrom','expTo'].forEach(id=>{const el=document.getElementById(id);if(el){el.min=mn;el.max=mx;}});}})();
 }
 </script>
